@@ -2,6 +2,65 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.9.0] - Eigener Bank-Reiter je Charakter
+### Neu (Nutzerwunsch: Bank separat)
+- Neuer Reiter "Bank": zeigt die CHARAKTERBANK jedes einzelnen
+  Charakters separat (Auswahl per Aufklapp-Liste) - das Gegenstueck zum
+  Reiter "KM-Bank", der die Kriegsmeutenbank des gesamten Accounts zeigt.
+- Fusszeile mit Stueckzahl und freien Bankplaetzen des gewaehlten Chars;
+  Scan-Hinweis, wenn der Char seine Bank noch nie besucht hat.
+- Wie ueberall: Hover-Tooltip, Shift-Klick-Itemlink, sortierbare Spalten.
+- Neue API: Exo.API.GetCharacterBankItems(charKey).
+### Intern
+- Listen-Mechanik (Tooltip/Sortierung/Zeilenaufbau) in das gemeinsame
+  Framework-Modul Exo.UI.ItemList ausgelagert (genutzt von Bank,
+  KM-Bank und KM-Items) - weniger doppelter Code.
+
+## [1.8.1] - KM-Items zeigt nur noch verschiebbare Teile
+### Behoben (User-Report: bereits gebundene Items in der Liste)
+- "Bis zum Anlegen"-Items, die schon angelegt wurden, sind seelengebunden
+  und lassen sich NICHT mehr in die Kriegsmeutenbank verschieben - der
+  Item-Typ meldet aber weiterhin "kriegsmeutengebunden". Solche Teile
+  tauchten deshalb faelschlich im Reiter "KM-Items" auf.
+- Fix: "Bis zum Anlegen" zaehlt nur noch ueber die beim Scan geprueften
+  EXEMPLARE (wirklich noch verschiebbar). Dauerhaft accountgebundene
+  Items (Erbstuecke & Co.) bleiben gelistet - die sind immer verschiebbar.
+- Titelzeile des Reiters weist jetzt darauf hin ("nur verschiebbare").
+### Hinweis
+- Nach dem Update einmal einloggen (Taschen scannen automatisch) und
+  fuer Bank-Bestaende die Bank oeffnen, damit die Exemplar-Pruefung
+  ueberall frisch ist.
+
+## [1.8.0] - Zwei eigene Kriegsmeute-Reiter + Hover-Tooltips
+### Neu (Nutzerwunsch: "getrennt")
+- Eigener Reiter "KM-Bank": der Inhalt der Kriegsmeutenbank selbst als
+  sortierbare Liste, Fusszeile mit Stueckzahl und freien Plaetzen.
+- Eigener Reiter "KM-Items": alle kriegsmeutengebundenen Items je
+  Charakter ("Thorgrim hat 10 Items, Lunara 5, ..."), mit Kopfzeile und
+  Item-/Stueck-Zaehler pro Char.
+- HOVER-TOOLTIP: In beiden Listen (und jetzt auch in der Inventar-
+  Bestandsliste) oeffnet das Ueberfahren einer Item-Zeile den normalen
+  Spiel-Tooltip; Shift-Klick postet weiterhin den Itemlink.
+- Beide Reiter lassen sich im Designer ein-/ausblenden.
+### Geaendert
+- Der Modus "Kriegsmeute" im Inventar-Reiter ist in den neuen Reiter
+  "KM-Items" umgezogen (Inventar hat wieder nur Bestand|Suche).
+
+## [1.7.1] - Bugfix: "bis zum Anlegen" wurde nicht erkannt
+### Behoben (User-Report: warbound Items fehlten in der Uebersicht)
+- "Kriegsmeutengebunden bis zum Anlegen" haengt oft am konkreten
+  EXEMPLAR, nicht an der Item-ID (der Item-Typ ist meist normales BoE).
+  Solche Teile fehlten in der Kriegsmeuten-Ansicht komplett.
+- Fix: Die Exemplar-Bindung wird jetzt direkt beim Taschen-/Bank-Scan
+  am Platz erkannt (C_Item.IsBoundToAccountUntilEquip) und in der
+  Datenbank mitgespeichert.
+- Bonus: Damit funktioniert die Anzeige auch fuer Items, deren Infos
+  der Client noch nicht geladen hat (vorher fiel die Erkennung auf
+  nicht gecachte GetItemInfo-Daten herein).
+### Hinweis
+- Taschen werden beim Einloggen automatisch neu gescannt; fuer die
+  BANK-Bestaende einmal die Bank mit dem jeweiligen Char oeffnen.
+
 ## [1.7.0] - Kriegsmeutengebunden-Uebersicht
 ### Neu
 - Inventar-Tab hat einen dritten Modus "Kriegsmeute": eine eigene
