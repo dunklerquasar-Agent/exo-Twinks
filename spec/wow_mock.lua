@@ -380,7 +380,7 @@ function mock.Reset()
 		GetItemInfo = function(itemID)
 			local d = state.itemDetails[itemID]
 			return state.itemNames[itemID], nil, nil, nil, nil, nil, nil,
-				nil, nil, nil, nil, nil, nil, nil, d and d.expansion
+				nil, nil, nil, nil, nil, nil, d and d.bindType, d and d.expansion
 		end,
 		GetItemIconByID = function(itemID)
 			local d = state.itemDetails[itemID]
