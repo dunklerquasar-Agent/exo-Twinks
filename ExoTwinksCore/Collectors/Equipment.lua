@@ -4,6 +4,8 @@
 -- Event-Strategie:
 --   PLAYER_ENTERING_WORLD / PLAYER_EQUIPMENT_CHANGED -> Scan entprellt
 --   (PLAYER_EQUIPMENT_CHANGED feuert beim Umziehen pro Slot einzeln)
+--   ITEM_CHANGED -> Scan entprellt: feuert, wenn ein Item AN ORT UND STELLE
+--   aufgewertet wird (M+-/Saison-Aufwertung eines angelegten Items)
 
 local _, Exo = ...
 
@@ -42,3 +44,4 @@ end
 
 Exo.EventBus:RegisterWowEvent("PLAYER_ENTERING_WORLD", debouncedScan, Collector)
 Exo.EventBus:RegisterWowEvent("PLAYER_EQUIPMENT_CHANGED", debouncedScan, Collector)
+Exo.EventBus:RegisterWowEvent("ITEM_CHANGED", debouncedScan, Collector)
