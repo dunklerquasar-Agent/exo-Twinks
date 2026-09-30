@@ -156,6 +156,7 @@ local function aggregateBagSet(bagSet, byId, field)
 					local count = item.count or 1
 					entry[field] = entry[field] + count
 					entry.total = entry.total + count
+					if item.wb then entry.wb = true end
 				end
 			end
 		end
@@ -182,6 +183,16 @@ function API.GetCharacterItems(charKey)
 	return toArray(byId)
 end
 
+-- Nur die BANK eines Charakters (1.9.0, Reiter "Bank"), gleiche Struktur.
+function API.GetCharacterBankItems(charKey)
+	local char = Exo.Store:IsReady() and Exo.Store:GetCharacter(charKey)
+	if not char then return {} end
+
+	local byId = {}
+	aggregateBagSet(char.bank, byId, "bank")
+	return toArray(byId)
+end
+
 -- Alle Items der Kriegsmeutenbank (accountweit), gleiche Struktur (Zaehler in total).
 function API.GetWarbandItems()
 	if not Exo.Store:IsReady() then return {} end
@@ -203,7 +214,10 @@ function API.GetWarboundByCharacter()
 	for _, charKey in ipairs(API.GetCharacterKeys()) do
 		local filtered = {}
 		for _, entry in ipairs(API.GetCharacterItems(charKey)) do
-			if Exo.WowAPI.IsWarbound(entry.itemID) then
+			-- Nur VERSCHIEBBARE Teile (1.8.1): Exemplar-Flag oder dauerhaft
+			-- accountgebundener Typ; bereits angelegte 'bis zum Anlegen'-Items
+			-- sind seelengebunden und bleiben draussen.
+			if entry.wb or Exo.WowAPI.IsPermanentWarbound(entry.itemID) then
 				filtered[#filtered + 1] = entry
 			end
 		end
