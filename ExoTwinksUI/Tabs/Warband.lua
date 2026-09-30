@@ -16,6 +16,7 @@ local BankTab = {
 	label = "KM-Bank",
 	sortBy = "total",
 	sortDesc = true,
+	viewMode = "list", -- "list" | "icons" (1.9.1)
 }
 Exo.UI.WarbandBankTab = BankTab
 
@@ -38,7 +39,7 @@ function BankTab:Render(content)
 	end
 
 	local items = L.Sort(self.GatherItems(), self.sortBy, self.sortDesc)
-	self._scroller:SetData(items)
+	L.Present(self, items)
 
 	local freeText = ""
 	local space = Exo.API.GetWarbandSpace()
@@ -61,6 +62,8 @@ end
 
 -- Test-Helfer
 function BankTab._GetScroller() return BankTab._scroller end
+function BankTab._GetIconScroller() return BankTab._iconScroller end
+function BankTab._GetViewButton() return BankTab._viewButton end
 function BankTab._GetFooter() return BankTab._footer end
 
 -- Reiter 2: KM-Items (kriegsmeutengebunden, je Charakter) -------------------------
@@ -70,6 +73,7 @@ local ItemsTab = {
 	label = "KM-Items",
 	sortBy = "total",
 	sortDesc = true,
+	viewMode = "list", -- "list" | "icons" (1.9.1)
 }
 Exo.UI.WarboundTab = ItemsTab
 
@@ -122,7 +126,7 @@ function ItemsTab:Render(content)
 	end
 
 	local groups = self.GatherWarbound()
-	self._scroller:SetData(self.BuildWarboundRows(groups, self.sortBy, self.sortDesc))
+	L.Present(self, self.BuildWarboundRows(groups, self.sortBy, self.sortDesc))
 
 	if #groups == 0 then
 		self._footer:SetText("Keine kriegsmeutengebundenen Items gefunden."
@@ -143,6 +147,8 @@ end
 
 -- Test-Helfer
 function ItemsTab._GetScroller() return ItemsTab._scroller end
+function ItemsTab._GetIconScroller() return ItemsTab._iconScroller end
+function ItemsTab._GetViewButton() return ItemsTab._viewButton end
 function ItemsTab._GetFooter() return ItemsTab._footer end
 
 Exo.UI:RegisterTab(BankTab)
