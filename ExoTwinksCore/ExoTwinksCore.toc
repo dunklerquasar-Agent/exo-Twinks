@@ -1,0 +1,46 @@
+## Interface: 120100
+## Title: exo-Twinks
+## Notes: exo-Twinks - Twink-Verwaltung: Uebersicht, Items, Raids, Mythic+ (Core)
+## Author: exo-Twinks Contributors
+## Version: 1.6.4
+## Group: exo-Twinks
+## Category: Other
+## Category-deDE: Sonstiges
+## SavedVariables: ExoTwinksDB, AltoCoreDB
+## IconTexture: Interface\Icons\inv_drink_13
+## AddonCompartmentFunc: ExoTwinks_OnAddonCompartmentClick
+
+Core\Log.lua
+Core\WowAPI.lua
+Core\EventBus.lua
+Core\Scheduler.lua
+
+Storage\Schema.lua
+Storage\Migrations.lua
+Storage\Migrations\001_initial.lua
+Storage\Store.lua
+Storage\LegacyImport.lua
+
+API\Public.lua
+API\ItemCounts.lua
+
+Collectors\Auctions.lua
+Collectors\Characters.lua
+Collectors\Containers.lua
+Collectors\Currencies.lua
+Collectors\Equipment.lua
+Collectors\InstanceLocks.lua
+Collectors\GuildBank.lua
+Collectors\GuildTax.lua
+Collectors\Mail.lua
+Collectors\MythicPlus.lua
+Collectors\Professions.lua
+Collectors\Quests.lua
+Collectors\Reputations.lua
+Collectors\Weeklies.lua
+
+Services\Minimap.lua
+Services\Tooltip.lua
+Services\Compat.lua
+
+Core\Init.lua
