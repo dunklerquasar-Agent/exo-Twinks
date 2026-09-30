@@ -44,6 +44,7 @@ describe("ExoTwinksUI / Bank-Tab (1.9.0)", function()
 		Tab = Exo.UI.BankTab
 		Tab.targetIndex = 1
 		Tab.sortBy, Tab.sortDesc = "total", true
+		Tab.viewMode = "list"
 		Exo.Store:DeleteCharacter(Exo.Store:GetCurrentKey())
 		seed()
 	end)
@@ -122,6 +123,32 @@ describe("ExoTwinksUI / Bank-Tab (1.9.0)", function()
 			local items = Tab._GetScroller().items
 			assert.equal(777, items[1].itemID) -- Friedensblume vor Kriegsgeb...
 			assert.equal(901, items[2].itemID)
+		end)
+
+		it("Symbole-Umschalter wechselt in die Icon-Ansicht und zurueck", function()
+			local content = CreateFrame("Frame")
+			Tab:Render(content)
+			assert.equal("Symbole", Tab._GetViewButton():GetText())
+
+			Exo.UI.ItemList.OnViewClick(Tab)
+			assert.equal("icons", Tab.viewMode)
+			local rows = Tab._GetIconScroller().items
+			assert.equal(1, #rows)              -- 2 Items passen in 1 Icon-Zeile
+			assert.equal(2, #rows[1].icons)
+			assert.equal("Liste", Tab._GetViewButton():GetText())
+			assert.equal(0, #Tab._GetScroller().items) -- Liste geleert/versteckt
+
+			-- Icon-Slot: Tooltip beim Hover
+			local shownID
+			_G.GameTooltip.SetItemByID = function(_, id) shownID = id end
+			local row = Tab._GetIconScroller().rows[1]
+			local slot = row.slots[1]
+			slot._scripts.OnEnter(slot)
+			assert.is_not_nil(shownID)
+
+			Exo.UI.ItemList.OnViewClick(Tab)
+			assert.equal("list", Tab.viewMode)
+			assert.equal(2, #Tab._GetScroller().items)
 		end)
 
 		it("Aufklapp-Liste oeffnet und waehlt direkt", function()
