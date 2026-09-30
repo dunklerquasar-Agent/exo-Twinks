@@ -33,6 +33,11 @@ local function scanBag(bagID)
 		local itemID, count = W.GetContainerItem(bagID, slot)
 		if itemID then
 			bag.items[slot] = { id = itemID, count = count }
+			-- Exemplar-Bindung (1.7.1): "kriegsmeutengebunden bis zum
+			-- Anlegen" nur am konkreten Stueck erkennbar -> mitspeichern
+			if W.IsSlotWarbound(bagID, slot) then
+				bag.items[slot].wb = true
+			end
 		else
 			bag.free = bag.free + 1
 		end
