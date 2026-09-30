@@ -1,4 +1,4 @@
-# exo-Twinks 1.6.4
+# exo-Twinks 1.9.0
 
 Der Account-Manager fuer World of Warcraft (Retail/Midnight): vereint die
 Kernfunktionen von **Altoholic**, **AlterEgo** und **SavedInstances** in
@@ -74,7 +74,7 @@ geschlossen ist (Schema ist versioniert und migriert selbststaendig).
 
 ## Entwicklung
 
-- Tests: `busted spec` (400 Tests), Statik: `luacheck ExoTwinksCore
+- Tests: `busted spec` (429 Tests), Statik: `luacheck ExoTwinksCore
   ExoTwinksUI ExoTwinksData spec`
 - Architektur: ein Global `Exo`; UI liest ausschliesslich `Exo.API`;
   interne Events `EXO_*` via `Exo.EventBus` (auch fuer Dritt-Addons).

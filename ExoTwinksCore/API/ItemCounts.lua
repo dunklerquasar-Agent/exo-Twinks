@@ -156,6 +156,7 @@ local function aggregateBagSet(bagSet, byId, field)
 					local count = item.count or 1
 					entry[field] = entry[field] + count
 					entry.total = entry.total + count
+					if item.wb then entry.wb = true end
 				end
 			end
 		end
@@ -182,6 +183,16 @@ function API.GetCharacterItems(charKey)
 	return toArray(byId)
 end
 
+-- Nur die BANK eines Charakters (1.9.0, Reiter "Bank"), gleiche Struktur.
+function API.GetCharacterBankItems(charKey)
+	local char = Exo.Store:IsReady() and Exo.Store:GetCharacter(charKey)
+	if not char then return {} end
+
+	local byId = {}
+	aggregateBagSet(char.bank, byId, "bank")
+	return toArray(byId)
+end
+
 -- Alle Items der Kriegsmeutenbank (accountweit), gleiche Struktur (Zaehler in total).
 function API.GetWarbandItems()
 	if not Exo.Store:IsReady() then return {} end
@@ -192,6 +203,40 @@ function API.GetWarbandItems()
 		entry.bags, entry.bank = 0, 0 -- Kriegsmeute kennt keine Taschen/Bank-Aufteilung
 	end
 	return toArray(byId)
+end
+
+-- Kriegsmeutengebundene Items je Charakter (1.7.0): welcher Char hortet
+-- welche warbound Teile in Taschen und Bank? Chars ohne Treffer werden
+-- weggelassen. Rueckgabe: Array { charKey, name, realm, classID, items },
+-- items im GetCharacterItems-Format { itemID, bags, bank, total }.
+function API.GetWarboundByCharacter()
+	local result = {}
+	for _, charKey in ipairs(API.GetCharacterKeys()) do
+		local filtered = {}
+		for _, entry in ipairs(API.GetCharacterItems(charKey)) do
+			-- Nur VERSCHIEBBARE Teile (1.8.1): Exemplar-Flag oder dauerhaft
+			-- accountgebundener Typ; bereits angelegte 'bis zum Anlegen'-Items
+			-- sind seelengebunden und bleiben draussen.
+			if entry.wb or Exo.WowAPI.IsPermanentWarbound(entry.itemID) then
+				filtered[#filtered + 1] = entry
+			end
+		end
+		if #filtered > 0 then
+			local meta = API.GetCharacterInfo(charKey) or {}
+			result[#result + 1] = {
+				charKey = charKey,
+				name = meta.name or charKey,
+				realm = meta.realm or "",
+				classID = meta.classID,
+				items = filtered,
+			}
+		end
+	end
+	table.sort(result, function(a, b)
+		if a.realm ~= b.realm then return a.realm < b.realm end
+		return a.name < b.name
+	end)
+	return result
 end
 
 -- Items einer Gildenbank (1.2.1), gleiches Format wie GetWarbandItems.

@@ -521,6 +521,15 @@ local function buildUI(self, content)
 			-- Shift-Klick: Itemlink in den Chat (0.16.0)
 			row:EnableMouse(true)
 			Widgets.AddRowHighlight(row)
+			-- Hover-Tooltip (1.8.0)
+			row:SetScript("OnEnter", function(frame)
+				if frame._itemID then
+					GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
+					GameTooltip:SetItemByID(frame._itemID)
+					GameTooltip:Show()
+				end
+			end)
+			row:SetScript("OnLeave", function() GameTooltip:Hide() end)
 			row:SetScript("OnMouseDown", function()
 				if row._itemID and Exo.WowAPI.IsShiftDown() then
 					Exo.WowAPI.InsertItemLink(row._itemID)
@@ -531,7 +540,7 @@ local function buildUI(self, content)
 		updateRow = function(row, item, absoluteIndex)
 			if item.section then
 				-- Typ-Kopfzeile: "Ruestung (12 Items, 340 Stueck)"
-				row._itemID = nil
+				row._itemID = false -- false statt nil (Mock-Auto-Stub)
 				row.icon:Hide()
 				row.bg:SetColorTexture(1, 1, 1, 0.09)
 				row.cells.name:SetText(string.format(
@@ -608,7 +617,7 @@ local function buildUI(self, content)
 						and "|cffffffff" .. entry.total .. "|r" or "")
 					slot:Show()
 				else
-					slot._itemID = nil
+					slot._itemID = false -- false statt nil (Mock-Auto-Stub)
 					slot:Hide()
 				end
 			end
