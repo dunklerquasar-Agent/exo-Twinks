@@ -373,18 +373,34 @@ function mock.Reset()
 		CreateFromBagAndSlot = function(_, bagID, slot)
 			return { bagID = bagID, slotIndex = slot }
 		end,
+		CreateFromEquipmentSlot = function(_, slot)
+			return { equipmentSlotIndex = slot }
+		end,
 	}
 	_G.C_Item = {
 		IsBoundToAccountUntilEquip = function(loc)
 			local bagFlags = state.warboundSlots[loc.bagID]
 			return (bagFlags and bagFlags[loc.slotIndex]) and true or false
 		end,
+		-- Link-basiert: liefert bei aufwertbaren Items nur das BASIS-Level
 		GetDetailedItemLevelInfo = function(link)
 			local id = tonumber(link:match("item:(%d+)"))
 			for _, item in pairs(state.equipment) do
-				if item.id == id then return item.ilvl end
+				if item.id == id then return item.baseIlvl or item.ilvl end
 			end
 			return 0
+		end,
+		-- Instanz-basiert: echtes Level der konkreten Item-Instanz
+		GetCurrentItemLevel = function(loc)
+			local item = loc and loc.equipmentSlotIndex
+				and state.equipment[loc.equipmentSlotIndex]
+			return item and item.ilvl or 0
+		end,
+		DoesItemExist = function(loc)
+			if loc and loc.equipmentSlotIndex then
+				return state.equipment[loc.equipmentSlotIndex] ~= nil
+			end
+			return true
 		end,
 		GetItemInfo = function(itemID)
 			local d = state.itemDetails[itemID]
@@ -716,7 +732,8 @@ function mock.SetCurrencies(list)
 	state.currencies = list or {}
 end
 
--- slots = { [slot] = { id = ..., ilvl = ... } }
+-- slots = { [slot] = { id, ilvl, baseIlvl? } }
+-- ilvl = echtes Instanz-Level; baseIlvl = Link-/Basis-Level (aufwertbare Items)
 function mock.SetEquipment(slots, avgOverall, avgEquipped)
 	state.equipment = slots or {}
 	state.avgItemLevel = { overall = avgOverall or 0, equipped = avgEquipped or 0 }
