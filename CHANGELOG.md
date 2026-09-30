@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.9.1] - Symbolansicht fuer Bank, KM-Bank und KM-Items
+### Behoben (User-Report: Umschalten auf Symbole ging nicht)
+- Die Reiter "Bank", "KM-Bank" und "KM-Items" haben jetzt denselben
+  Liste/Symbole-Umschalter wie das Inventar (Button oben rechts).
+- Symbol-Raster mit Qualitaetsrahmen, Stueckzahl am Icon, Hover-Tooltip
+  und Shift-Klick-Itemlink; Charakter-Kopfzeilen bleiben in KM-Items
+  auch im Symbol-Modus erhalten.
+- Anzahl der Icons pro Zeile passt sich der Fensterbreite an.
+
 ## [1.9.0] - Eigener Bank-Reiter je Charakter
 ### Neu (Nutzerwunsch: Bank separat)
 - Neuer Reiter "Bank": zeigt die CHARAKTERBANK jedes einzelnen
