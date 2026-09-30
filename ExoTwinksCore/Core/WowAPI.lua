@@ -292,6 +292,25 @@ function W.GetItemQuality(itemID)
 	return quality
 end
 
+-- Bindungstyp eines Items (14. Rueckgabewert von GetItemInfo, Enum.ItemBind).
+-- nil, solange der Client das Item noch nicht geladen hat.
+function W.GetItemBindType(itemID)
+	return (select(14, C_Item.GetItemInfo(itemID)))
+end
+
+-- Kriegsmeutengebunden? Enum.ItemBind: ToWoWAccount=7, ToBnetAccount=8,
+-- ToBnetAccountUntilEquipped=9 ("Kriegsmeutengebunden bis zum Anlegen").
+-- Enum-first mit numerischem Fallback fuer aeltere Clients/Tests.
+function W.IsWarbound(itemID)
+	local bind = W.GetItemBindType(itemID)
+	if not bind then return false end
+	local enum = _G.Enum and _G.Enum.ItemBind
+	if bind == ((enum and enum.ToWoWAccount) or 7) then return true end
+	if bind == ((enum and enum.ToBnetAccount) or 8) then return true end
+	if bind == ((enum and enum.ToBnetAccountUntilEquipped) or 9) then return true end
+	return false
+end
+
 -- Itemklasse: classID/subclassID (Enum.ItemClass) + lokalisierte Namen
 -- ("Ruestung", "Leder"). GetItemInfoInstant ist sofort verfuegbar.
 function W.GetItemClass(itemID)
