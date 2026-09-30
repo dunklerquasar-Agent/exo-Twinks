@@ -18,7 +18,7 @@ Zaehler, Tooltips und Inventar-Browse ueberall identisch:
     [bagID] = {
         size = n,           -- Plaetze gesamt
         free = n,           -- freie Plaetze
-        items = { [slot] = { id = itemID, count = n } },
+        items = { [slot] = { id = itemID, count = n, wb = true? } },
         bagItemID = itemID, -- nur Char-Taschen 1-5: die Tasche selbst
         name = "Mats",      -- nur Gildenbank: Tab-Beschriftung
     }
@@ -30,3 +30,11 @@ Zaehler, Tooltips und Inventar-Browse ueberall identisch:
   feste ID-Listen sind verboten, immer `Enum.BagIndex` fragen.
 - 1.6.3: Bank-TABS haben keine Inventar-Slots mehr ->
   `ContainerIDToInventoryID` nur noch fuer Char-Taschen 1-5 aufrufen.
+
+## wb-Flag (seit 1.7.1)
+
+`wb = true` am Slot-Item markiert das konkrete Exemplar als
+kriegsmeutengebunden ("bis zum Anlegen"). Erfasst beim Scan via
+C_Item.IsBoundToAccountUntilEquip(ItemLocation), zusaetzlich zur
+Item-Typ-Erkennung (Enum.ItemBind 7/8/9). Ausgewertet von
+Exo.API.GetWarboundByCharacter() und dem Reiter "KM-Items".

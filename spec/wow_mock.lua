@@ -369,7 +369,16 @@ function mock.Reset()
 		local item = state.equipment[slot]
 		return item and ("item:" .. item.id) or nil
 	end
+	_G.ItemLocation = {
+		CreateFromBagAndSlot = function(_, bagID, slot)
+			return { bagID = bagID, slotIndex = slot }
+		end,
+	}
 	_G.C_Item = {
+		IsBoundToAccountUntilEquip = function(loc)
+			local bagFlags = state.warboundSlots[loc.bagID]
+			return (bagFlags and bagFlags[loc.slotIndex]) and true or false
+		end,
 		GetDetailedItemLevelInfo = function(link)
 			local id = tonumber(link:match("item:(%d+)"))
 			for _, item in pairs(state.equipment) do
@@ -399,6 +408,7 @@ function mock.Reset()
 	}
 	state.itemNames = {}
 	state.itemDetails = {}
+	state.warboundSlots = {}
 
 	-- Tooltip-Pipeline (TooltipDataProcessor)
 	state.tooltipHandlers = {}
@@ -522,12 +532,15 @@ function mock.LoadExoUI(root)
 		root .. "/Framework/Widgets.lua",
 		root .. "/Framework/Theme.lua",
 		root .. "/Framework/VirtualScroll.lua",
+		root .. "/Framework/ItemList.lua",
 		root .. "/Framework/Window.lua",
 		root .. "/Tabs/Overview.lua",
 		root .. "/Tabs/Characters.lua",
 		root .. "/Tabs/CharacterDetail.lua",
 		root .. "/Tabs/Search.lua",
 		root .. "/Tabs/Inventory.lua",
+		root .. "/Tabs/Bank.lua",
+		root .. "/Tabs/Warband.lua",
 		root .. "/Tabs/Professions.lua",
 		root .. "/Tabs/Mail.lua",
 		root .. "/Tabs/Reputations.lua",
@@ -732,6 +745,11 @@ function mock.SetItemNames(names)
 end
 
 -- details = { [itemID] = { quality, classID, type, subclassID, subtype, expansion, icon } }
+-- Exemplar-Bindung je Taschenplatz: { [bagID] = { [slot] = true } }
+function mock.SetWarboundSlots(slots)
+	state.warboundSlots = slots or {}
+end
+
 function mock.SetItemDetails(details)
 	state.itemDetails = details or {}
 end
