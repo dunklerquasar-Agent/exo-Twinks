@@ -142,13 +142,26 @@ end
 
 W.EQUIPMENT_SLOTS = { first = 1, last = 19 } -- INVSLOT_HEAD .. INVSLOT_TABARD
 
--- Liefert (itemID, ilvl) oder nil fuer leere Slots
+-- Liefert (itemID, ilvl) oder nil fuer leere Slots.
+-- Itemlevel: bevorzugt das echte Level der Item-INSTANZ (C_Item.GetCurrentItemLevel),
+-- denn bei saisonal aufwertbaren Items (M+-Aufwertung, z. B. Siegel-Ringe) traegt der
+-- Itemlink nur das Basis-Level. Link-Variante bleibt als Fallback.
 function W.GetInventoryItem(slot)
 	local itemID = GetInventoryItemID("player", slot)
 	if not itemID then return end
 
-	local link = GetInventoryItemLink("player", slot)
-	local ilvl = link and C_Item.GetDetailedItemLevelInfo(link) or 0
+	local ilvl
+	if ItemLocation and ItemLocation.CreateFromEquipmentSlot
+		and C_Item.GetCurrentItemLevel then
+		local location = ItemLocation:CreateFromEquipmentSlot(slot)
+		if not C_Item.DoesItemExist or C_Item.DoesItemExist(location) then
+			ilvl = C_Item.GetCurrentItemLevel(location)
+		end
+	end
+	if not ilvl or ilvl == 0 then
+		local link = GetInventoryItemLink("player", slot)
+		ilvl = link and C_Item.GetDetailedItemLevelInfo(link) or 0
+	end
 	return itemID, ilvl
 end
 

@@ -41,6 +41,47 @@ describe("Equipment-Collector", function()
 		assert.equal(639, currentChar().equipment.slots[1].ilvl)
 	end)
 
+	it("aufwertbare Items: echtes Instanz-Level statt Basis-Level aus dem Link", function()
+		-- z. B. Siegel-Ring: Link meldet Basis 597, Instanz ist auf 684 aufgewertet
+		mock.SetEquipment({
+			[11] = { id = 211234, ilvl = 684, baseIlvl = 597 },
+		}, 660, 660)
+		mock.FireEvent("PLAYER_EQUIPMENT_CHANGED", 11, false)
+		mock.AdvanceTime(0.5)
+
+		assert.equal(684, currentChar().equipment.slots[11].ilvl)
+	end)
+
+	it("Fallback auf Link-Level, wenn Instanz-API fehlt (alte Clients)", function()
+		_G.C_Item.GetCurrentItemLevel = nil
+		mock.SetEquipment({
+			[11] = { id = 211234, ilvl = 684, baseIlvl = 597 },
+		}, 660, 660)
+		mock.FireEvent("PLAYER_EQUIPMENT_CHANGED", 11, false)
+		mock.AdvanceTime(0.5)
+
+		assert.equal(597, currentChar().equipment.slots[11].ilvl)
+	end)
+
+	it("ITEM_CHANGED (Aufwertung an Ort und Stelle) stoesst Rescan an", function()
+		mock.SetEquipment({
+			[11] = { id = 211234, ilvl = 671, baseIlvl = 597 },
+		}, 655, 655)
+		mock.FireEvent("PLAYER_ENTERING_WORLD")
+		mock.AdvanceTime(0.5)
+		assert.equal(671, currentChar().equipment.slots[11].ilvl)
+
+		-- Item wird angelegt beim Haendler aufgewertet -> nur ITEM_CHANGED feuert
+		mock.SetEquipment({
+			[11] = { id = 211234, ilvl = 684, baseIlvl = 597 },
+		}, 660, 660)
+		mock.FireEvent("ITEM_CHANGED", "item:211234", "item:211234")
+		mock.AdvanceTime(0.5)
+
+		assert.equal(684, currentChar().equipment.slots[11].ilvl)
+		assert.equal(660, currentChar().equipment.avgItemLevel)
+	end)
+
 	it("Itemwechsel ueberschreibt den Slot", function()
 		mock.FireEvent("PLAYER_EQUIPMENT_CHANGED", 16, false)
 		mock.AdvanceTime(0.5)

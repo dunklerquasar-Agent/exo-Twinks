@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.9.2] - Korrekte Itemlevel bei M+-aufgewerteten Items
+### Behoben (User-Report: z. B. Siegel-Ring zeigte falsches Itemlevel)
+- Itemlevel angelegter Ausruestung wird jetzt ueber die Item-INSTANZ ermittelt
+  (C_Item.GetCurrentItemLevel) statt ueber den Itemlink - bei saisonal
+  aufwertbaren Items (M+-Aufwertungssystem) traegt der Link nur das
+  Basis-Level. Link-Abfrage bleibt als Fallback fuer alte Clients.
+- Neuer Trigger ITEM_CHANGED: Wird ein angelegtes Item beim Haendler an Ort
+  und Stelle aufgewertet, scannt das Addon die Ausruestung sofort neu.
+
 ## [1.9.1] - Symbolansicht fuer Bank, KM-Bank und KM-Items
 ### Behoben (User-Report: Umschalten auf Symbole ging nicht)
 - Die Reiter "Bank", "KM-Bank" und "KM-Items" haben jetzt denselben
