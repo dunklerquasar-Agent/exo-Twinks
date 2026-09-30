@@ -292,10 +292,38 @@ function W.GetItemQuality(itemID)
 	return quality
 end
 
+-- Ist das konkrete EXEMPLAR in diesem Taschenplatz "kriegsmeutengebunden
+-- bis zum Anlegen"? Diese Bindung haengt am Exemplar, nicht an der Item-ID:
+-- viele Drops sind vom Typ her BoE und erst das gedroppte Stueck ist
+-- warbound. Deshalb wird sie beim Scannen erfasst und mitgespeichert.
+function W.IsSlotWarbound(bagID, slot)
+	local CI = _G.C_Item
+	if CI and CI.IsBoundToAccountUntilEquip and _G.ItemLocation then
+		local ok, bound = pcall(CI.IsBoundToAccountUntilEquip,
+			_G.ItemLocation:CreateFromBagAndSlot(bagID, slot))
+		if ok and bound then return true end
+	end
+	return false
+end
+
 -- Bindungstyp eines Items (14. Rueckgabewert von GetItemInfo, Enum.ItemBind).
 -- nil, solange der Client das Item noch nicht geladen hat.
 function W.GetItemBindType(itemID)
 	return (select(14, C_Item.GetItemInfo(itemID)))
+end
+
+-- DAUERHAFT kriegsmeutengebunden (bleibt auch nach dem Anlegen
+-- verschiebbar): ToWoWAccount=7 und ToBnetAccount=8. Typ 9 ("bis zum
+-- Anlegen") gehoert bewusst NICHT hierher -- ein bereits angelegtes
+-- Exemplar ist seelengebunden und nicht mehr verschiebbar; solche Items
+-- zaehlen nur ueber das beim Scan erfasste Exemplar-Flag (wb).
+function W.IsPermanentWarbound(itemID)
+	local bind = W.GetItemBindType(itemID)
+	if not bind then return false end
+	local enum = _G.Enum and _G.Enum.ItemBind
+	if bind == ((enum and enum.ToWoWAccount) or 7) then return true end
+	if bind == ((enum and enum.ToBnetAccount) or 8) then return true end
+	return false
 end
 
 -- Kriegsmeutengebunden? Enum.ItemBind: ToWoWAccount=7, ToBnetAccount=8,
