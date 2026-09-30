@@ -2,6 +2,19 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.7.0] - Kriegsmeutengebunden-Uebersicht
+### Neu
+- Inventar-Tab hat einen dritten Modus "Kriegsmeute": eine eigene
+  Uebersicht aller KRIEGSMEUTENGEBUNDENEN Items - gruppiert je Charakter
+  ("Char X hat dieses und dieses warbound Teil in Taschen/Bank").
+- Erkannt werden alle drei Bindungsarten: Accountgebunden,
+  Kriegsmeutengebunden und "Kriegsmeutengebunden bis zum Anlegen"
+  (Enum.ItemBind 7/8/9, dynamisch vom Client).
+- Gleiche Spalten wie der Bestand (Anzahl/Taschen/Bank), sortierbar per
+  Header-Klick; Shift-Klick verlinkt das Item in den Chat; Fusszeile
+  zaehlt Items, Charaktere und Stueck.
+- Neue API fuer Bastler: Exo.API.GetWarboundByCharacter().
+
 ## [1.6.4] - Bugfix: doppelt gezaehlte Kriegsmeuten-Items
 ### Behoben (Screenshot-Report: "2464 insgesamt" statt 616)
 - Vor dem 1.6.2-Fix landete Kriegsmeuten-Tab 1 faelschlich in der

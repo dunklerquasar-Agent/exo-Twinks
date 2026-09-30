@@ -11,7 +11,7 @@ local Tab = {
 	sortBy = "total",
 	sortDesc = true,
 	targetIndex = 1,
-	mode = "browse", -- "browse" (Bestand) | "search" (eingebettete Suche)
+	mode = "browse", -- "browse" (Bestand) | "search" (Suche) | "warbound" (Kriegsmeutengebunden)
 	viewMode = "list", -- "list" | "icons"
 	groupModeIndex = 1,
 }
@@ -109,6 +109,40 @@ function Tab.GatherItems(targetKey)
 			and expansion >= Exo.WowAPI.GetCurrentExpansion()
 	end
 	return items
+end
+
+-- Kriegsmeutengebunden-Uebersicht (1.7.0): welcher Charakter hat welche
+-- warbound Items in Taschen/Bank? Gruppen = Charaktere (statt Itemklassen).
+function Tab.GatherWarbound()
+	local groups = Exo.API.GetWarboundByCharacter()
+	for _, group in ipairs(groups) do
+		group.label = string.format("%s (%s)",
+			Exo.UI.Format.ClassName(group.name, group.classID),
+			group.realm ~= "" and group.realm or "?")
+		for _, item in ipairs(group.items) do
+			item.name = Exo.WowAPI.GetItemName(item.itemID) or ("Item " .. item.itemID)
+			item.quality = Exo.WowAPI.GetItemQuality(item.itemID)
+			item.icon = Exo.WowAPI.GetItemIcon(item.itemID)
+		end
+	end
+	return groups
+end
+
+-- Zeilen fuer die Kriegsmeutengebunden-Ansicht: Kopfzeile je Charakter,
+-- darunter dessen warbound Items (gleiche Spalten wie der Bestand).
+function Tab.BuildWarboundRows(groups, sortBy, sortDesc)
+	local rows = {}
+	for _, group in ipairs(groups) do
+		Tab.SortItems(group.items, sortBy, sortDesc)
+		local pieces = 0
+		for _, item in ipairs(group.items) do pieces = pieces + item.total end
+		rows[#rows + 1] = { section = true, label = group.label,
+			count = #group.items, pieces = pieces }
+		for _, item in ipairs(group.items) do
+			rows[#rows + 1] = item
+		end
+	end
+	return rows
 end
 
 -- Anzeige-Reihenfolge der Itemklassen (Enum.ItemClass); Rest nach Typname
@@ -399,12 +433,16 @@ local function buildUI(self, content)
 		self:SetMode("search")
 	end)
 	self._modeButtons.search:SetPoint("TOPLEFT", 72, 0)
+	self._modeButtons.warbound = Widgets.Button(content, "Kriegsmeute", 92, 20, function()
+		self:SetMode("warbound")
+	end)
+	self._modeButtons.warbound:SetPoint("TOPLEFT", 140, 0)
 
 	-- Charakter-Auswahl
 	self._targetButton = Widgets.Button(content, "", 200, 20, function()
 		self:OnTargetClick()
 	end)
-	self._targetButton:SetPoint("TOPLEFT", 144, 0)
+	self._targetButton:SetPoint("TOPLEFT", 240, 0)
 
 	-- Aufklappbare Ziel-Liste (1.4.1) unter dem Charakter-Button
 	local dropdown = Exo.WowAPI.CreateFrame("Frame", nil, content)
@@ -653,6 +691,37 @@ function Tab:Render(content)
 		self._footer:Hide()
 		self._searchHost:Show()
 		Exo.UI.SearchTab:Render(self._searchHost)
+		return
+	end
+	if self.mode == "warbound" then
+		self:CloseTargetDropdown()
+		self._searchHost:Hide()
+		self._targetButton:Hide()
+		self._groupButton:Hide()
+		self._viewButton:Hide()
+		self._iconScroller:SetData({})
+		self._iconScroller:GetFrame():Hide()
+		for _, btn in pairs(self._headerButtons) do btn:Show() end
+		local groups = Tab.GatherWarbound()
+		local warboundRows = Tab.BuildWarboundRows(groups, self.sortBy, self.sortDesc)
+		self._scroller:SetData(warboundRows)
+		self._scroller:GetFrame():Show()
+		self._footer:Show()
+		if #groups == 0 then
+			self._footer:SetText("Keine kriegsmeutengebundenen Items gefunden."
+				.. " Tipp: Charaktere einmal einloggen (Bank zaehlt nach Bankbesuch).")
+		else
+			local kinds, pieces = 0, 0
+			for _, group in ipairs(groups) do
+				kinds = kinds + #group.items
+				for _, item in ipairs(group.items) do pieces = pieces + item.total end
+			end
+			local Format = Exo.UI.Format
+			self._footer:SetText(string.format("%s bei %s, %s Stueck gesamt",
+				Format.Count(kinds, "kriegsmeutengebundenes Item", "kriegsmeutengebundene Items"),
+				Format.Count(#groups, "Charakter", "Charakteren"),
+				Format.GroupDigits(pieces)))
+		end
 		return
 	end
 	self._searchHost:Hide()

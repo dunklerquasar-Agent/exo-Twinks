@@ -194,6 +194,37 @@ function API.GetWarbandItems()
 	return toArray(byId)
 end
 
+-- Kriegsmeutengebundene Items je Charakter (1.7.0): welcher Char hortet
+-- welche warbound Teile in Taschen und Bank? Chars ohne Treffer werden
+-- weggelassen. Rueckgabe: Array { charKey, name, realm, classID, items },
+-- items im GetCharacterItems-Format { itemID, bags, bank, total }.
+function API.GetWarboundByCharacter()
+	local result = {}
+	for _, charKey in ipairs(API.GetCharacterKeys()) do
+		local filtered = {}
+		for _, entry in ipairs(API.GetCharacterItems(charKey)) do
+			if Exo.WowAPI.IsWarbound(entry.itemID) then
+				filtered[#filtered + 1] = entry
+			end
+		end
+		if #filtered > 0 then
+			local meta = API.GetCharacterInfo(charKey) or {}
+			result[#result + 1] = {
+				charKey = charKey,
+				name = meta.name or charKey,
+				realm = meta.realm or "",
+				classID = meta.classID,
+				items = filtered,
+			}
+		end
+	end
+	table.sort(result, function(a, b)
+		if a.realm ~= b.realm then return a.realm < b.realm end
+		return a.name < b.name
+	end)
+	return result
+end
+
 -- Items einer Gildenbank (1.2.1), gleiches Format wie GetWarbandItems.
 function API.GetGuildItems(guildName)
 	if not Exo.Store:IsReady() then return {} end
