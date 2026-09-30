@@ -75,6 +75,7 @@ read_globals = {
 	"GetProfessionInfo",
 	"C_CurrencyInfo",
 	"C_Item",
+	"ItemLocation",
 	"GetInventoryItemID",
 	"GetInventoryItemLink",
 	"GetAverageItemLevel",
