@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>AltoNG v0.9 Mockup — AlterEgo-Optik</title>
+<style>
+  body { background:#1a1a22; margin:0; padding:24px; font-family:"Segoe UI",Arial,sans-serif; color:#ddd; }
+  .hint { max-width:1060px; margin:0 auto 14px; color:#888; font-size:13px; }
+  .win { max-width:1060px; margin:0 auto; background:#0d0d12; border:1px solid #26262e; border-radius:4px; overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,.6); }
+  .titlebar { display:flex; align-items:center; background:#101018; padding:8px 12px; border-bottom:1px solid #26262e; }
+  .logo { color:#69ccf0; font-weight:700; margin-right:6px; }
+  .title { color:#eee; font-weight:600; }
+  .affix { margin-left:auto; margin-right:auto; display:flex; gap:6px; }
+  .affix span { width:22px; height:22px; border-radius:3px; display:inline-block; border:1px solid #333; }
+  .btns { display:flex; gap:10px; color:#888; font-size:14px; }
+  .btns span { cursor:default; }
+  table { border-collapse:collapse; width:100%; font-size:13px; }
+  td, th { padding:4px 10px; text-align:center; white-space:nowrap; }
+  td.lbl { text-align:left; color:#ffd100; font-weight:600; width:180px; }
+  tr.section td { background:#14141c; color:#ffd100; font-weight:700; text-align:left; padding-top:6px; border-top:1px solid #26262e; }
+  col.odd { background:rgba(255,255,255,.025); }
+  tr:hover td { background:rgba(105,204,240,.06); }
+  tr.section:hover td { background:#14141c; }
+  .c-priest{color:#fff} .c-pala{color:#f58cba} .c-hunt{color:#abd473} .c-dk{color:#c41f3b} .c-mage{color:#69ccf0} .c-monk{color:#00ff96}
+  .ep{color:#a335ee} .ra{color:#0070dd} .un{color:#1eff00} .le{color:#ff8000} .ar{color:#e6cc80} .gr{color:#9d9d9d} .go{color:#ffd100} .grn{color:#1eff00}
+  .sq { display:inline-block; width:9px; height:9px; margin:0 1px; border-radius:1px; background:#26262e; }
+  .sq.m{background:#a335ee} .sq.h{background:#0070dd} .sq.n{background:#1eff00} .sq.l{background:#9d9d9d}
+  .footer { padding:6px 12px; color:#777; font-size:12px; border-top:1px solid #26262e; display:flex; }
+  .footer .pg { margin-left:auto; color:#69ccf0; }
+  .cap{color:#ff4444; font-weight:600}
+</style>
+</head>
+<body>
+<div class="hint">Mockup: AltoNG v0.9.0 — Haupt-Tab „Charaktere“ im AlterEgo-Stil (Zeilen aus AlterEgo + Altoholic + SavedInstances in <b>einer</b> Matrix)</div>
+<div class="win">
+  <div class="titlebar">
+    <span class="logo">✦</span><span class="title">AltoNG</span>
+    <div class="affix"><span style="background:#1c3a4a"></span><span style="background:#4a3a1c"></span><span style="background:#3a1c4a"></span></div>
+    <div class="btns"><span>📢</span><span>⇅</span><span>⚙</span><span>✕</span></div>
+  </div>
+  <table>
+    <colgroup><col><col><col class="odd"><col><col class="odd"><col><col class="odd"></colgroup>
+    <tr><td class="lbl">Charakter</td><td class="c-priest">Liquidora</td><td class="c-pala">Liquidorn</td><td class="c-hunt">Liquidore</td><td class="c-dk">Liquidorp</td><td class="c-mage">Liquidori</td><td class="c-monk">Liquidorion</td></tr>
+    <tr><td class="lbl">Realm</td><td>Silvermoon</td><td>Silvermoon</td><td>Silvermoon</td><td>Silvermoon</td><td>Silvermoon</td><td>Silvermoon</td></tr>
+    <tr><td class="lbl">Gold</td><td class="go">124.532</td><td class="go">18.210</td><td class="go">7.940</td><td class="go">52.017</td><td class="go">1.204</td><td class="go">633</td></tr>
+    <tr><td class="lbl">Item-Level</td><td class="ep">489</td><td class="ep">485</td><td class="ep">484</td><td class="ep">478</td><td class="ra">462</td><td class="ra">437</td></tr>
+    <tr><td class="lbl">Wertung</td><td class="ar">3044</td><td class="le">2552</td><td class="ep">2280</td><td class="ep">2121</td><td class="ra">1155</td><td>0</td></tr>
+    <tr><td class="lbl">Keystone</td><td>BRH +16</td><td>AD +18</td><td>–</td><td>EB +14</td><td>–</td><td>–</td></tr>
+    <tr><td class="lbl">Vault</td><td class="grn">Rewards!</td><td>2/3 · 1/3 · 0/3</td><td class="grn">Rewards!</td><td>1/3 · 0/3 · 2/3</td><td>–</td><td>–</td></tr>
+    <tr><td class="lbl">Raids</td><td><span class="ep">M</span> <span class="ra">HC</span> –</td><td>– – –</td><td>– – –</td><td><span class="ra">HC</span> <span class="ra">HC</span> –</td><td>– – –</td><td>– – –</td></tr>
+    <tr><td class="lbl">Weeklies</td><td class="grn">4/4</td><td>2/4</td><td>3/4</td><td>1/4</td><td>0/4</td><td>0/4</td></tr>
+    <tr><td class="lbl">Runenwappen</td><td class="cap">480/480</td><td>320/480</td><td>210/480</td><td>455/480</td><td>60/480</td><td>0/480</td></tr>
+    <tr class="section"><td colspan="7">Mythic+ — Season-Best</td></tr>
+    <tr><td class="lbl" style="padding-left:22px">Atal'Dazar</td><td class="ep">23</td><td class="un">18</td><td class="un">18</td><td class="ra">11</td><td>–</td><td>–</td></tr>
+    <tr><td class="lbl" style="padding-left:22px">Black Rook Hold</td><td class="ep">23</td><td class="ep">20</td><td class="un">18</td><td class="un">19</td><td class="ra">13</td><td>–</td></tr>
+    <tr><td class="lbl" style="padding-left:22px">Darkheart Thicket</td><td class="ep">21</td><td class="un">18</td><td class="un">18</td><td class="ra">12</td><td class="ra">13</td><td>–</td></tr>
+    <tr><td class="lbl" style="padding-left:22px">The Everbloom</td><td class="ep">20</td><td class="un">15</td><td class="un">18</td><td>–</td><td>–</td><td>–</td></tr>
+    <tr class="section"><td colspan="7">Amirdrassil, der Traum der Hoffnung</td></tr>
+    <tr><td class="lbl" style="padding-left:22px">LFR</td><td><span class="sq l"></span><span class="sq l"></span><span class="sq l"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq l"></span><span class="sq l"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td></tr>
+    <tr><td class="lbl" style="padding-left:22px">Heroisch</td><td><span class="sq h"></span><span class="sq h"></span><span class="sq h"></span><span class="sq h"></span><span class="sq h"></span><span class="sq h"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq h"></span><span class="sq h"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq h"></span><span class="sq h"></span><span class="sq h"></span><span class="sq h"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td></tr>
+    <tr><td class="lbl" style="padding-left:22px">Mythisch</td><td><span class="sq m"></span><span class="sq m"></span><span class="sq m"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td><td><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span></td></tr>
+  </table>
+  <div class="footer">
+    <span>Tabs: <b style="color:#69ccf0">Charaktere</b> · Suche · Inventar &nbsp;|&nbsp; Zeilen konfigurierbar (⚙)</span>
+    <span class="pg">Chars 1/6 &nbsp;›</span>
+  </div>
+</div>
+</body>
+</html>

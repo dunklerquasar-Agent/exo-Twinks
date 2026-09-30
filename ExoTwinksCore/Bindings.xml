@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="EXO_TOGGLE" category="ADDONS">
+		if Exo and Exo._internal and Exo._internal.toggleUI then Exo._internal.toggleUI() end
+	</Binding>
+</Bindings>

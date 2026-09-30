@@ -1,0 +1,10 @@
+# Editor/OS
+.DS_Store
+*.swp
+.idea/
+.vscode/
+# Lua-Toolchain
+luacov.*.out
+.luarocks/
+# Release-Artefakte
+*.zip
