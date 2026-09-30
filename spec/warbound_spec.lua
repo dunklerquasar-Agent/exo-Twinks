@@ -79,6 +79,7 @@ describe("Kriegsmeute-Reiter (1.8.0)", function()
 		ItemsTab = Exo.UI.WarboundTab
 		BankTab.sortBy, BankTab.sortDesc = "total", true
 		ItemsTab.sortBy, ItemsTab.sortDesc = "total", true
+		BankTab.viewMode, ItemsTab.viewMode = "list", "list"
 		Exo.Store:DeleteCharacter(Exo.Store:GetCurrentKey())
 		seed()
 	end)
@@ -302,6 +303,45 @@ describe("Kriegsmeute-Reiter (1.8.0)", function()
 			local content = CreateFrame("Frame")
 			BankTab:Render(content)
 			assert.truthy(BankTab._GetFooter():GetText():find("Bankfach oeffnen"))
+		end)
+	end)
+
+	describe("Symbolansicht (1.9.1)", function()
+		it("KM-Items: Char-Kopfzeilen bleiben, Items werden Icon-Zeilen", function()
+			local content = CreateFrame("Frame")
+			ItemsTab:Render(content)
+			Exo.UI.ItemList.OnViewClick(ItemsTab)
+			assert.equal("icons", ItemsTab.viewMode)
+			local rows = ItemsTab._GetIconScroller().items
+			assert.equal(4, #rows) -- Caro-Kopf, 1 Icon-Zeile, Anna-Kopf, 1 Icon-Zeile
+			assert.is_true(rows[1].section)
+			assert.equal(1, #rows[2].icons)
+			assert.is_true(rows[3].section)
+			assert.equal(2, #rows[4].icons)
+			assert.equal("Liste", ItemsTab._GetViewButton():GetText())
+		end)
+
+		it("KM-Bank: Icon-Raster mit Stueckzahl am Slot", function()
+			local content = CreateFrame("Frame")
+			BankTab:Render(content)
+			Exo.UI.ItemList.OnViewClick(BankTab)
+			local rows = BankTab._GetIconScroller().items
+			assert.equal(1, #rows)
+			assert.equal(2, #rows[1].icons)
+			-- Slot 1 = Item 901 (40 Stueck, total-desc sortiert)
+			local slot = BankTab._GetIconScroller().rows[1].slots[1]
+			assert.equal(901, slot._itemID)
+			assert.truthy(slot.count:GetText():find("40"))
+		end)
+
+		it("Umschalten zurueck zur Liste zeigt wieder Zeilen + Header", function()
+			local content = CreateFrame("Frame")
+			BankTab:Render(content)
+			Exo.UI.ItemList.OnViewClick(BankTab)
+			Exo.UI.ItemList.OnViewClick(BankTab)
+			assert.equal("list", BankTab.viewMode)
+			assert.equal(2, #BankTab._GetScroller().items)
+			assert.equal(0, #BankTab._GetIconScroller().items)
 		end)
 	end)
 

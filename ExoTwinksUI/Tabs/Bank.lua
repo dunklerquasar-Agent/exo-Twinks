@@ -12,6 +12,7 @@ local Tab = {
 	sortBy = "total",
 	sortDesc = true,
 	targetIndex = 1,
+	viewMode = "list", -- "list" | "icons" (1.9.1)
 }
 Exo.UI.BankTab = Tab
 
@@ -170,7 +171,9 @@ end
 function Tab:Render(content)
 	if self._content ~= content then
 		self._content = content
-		L.Build(self, content, self.COLUMNS, "|cff1784d1Charakterbank|r")
+		-- Symbole-Button links neben der Charakter-Auswahl (220 breit bei -4)
+		L.Build(self, content, self.COLUMNS, "|cff1784d1Charakterbank|r",
+			{ viewX = -232 })
 		buildSelector(self, content)
 	end
 
@@ -181,7 +184,7 @@ function Tab:Render(content)
 		and L.Sort(L.Enrich(Exo.API.GetCharacterBankItems(target.key)),
 			self.sortBy, self.sortDesc)
 		or {}
-	self._scroller:SetData(items)
+	L.Present(self, items)
 
 	-- Freie Bankplaetze des gewaehlten Charakters
 	local freeText = ""
@@ -209,6 +212,8 @@ end
 
 -- Test-Helfer
 function Tab._GetScroller() return Tab._scroller end
+function Tab._GetIconScroller() return Tab._iconScroller end
+function Tab._GetViewButton() return Tab._viewButton end
 function Tab._GetFooter() return Tab._footer end
 function Tab._GetTargetButton() return Tab._targetButton end
 function Tab._GetTargetDropdown() return Tab._targetDropdown end

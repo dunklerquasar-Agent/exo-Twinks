@@ -2,7 +2,7 @@
 ## Title: exo-Twinks
 ## Notes: exo-Twinks - Twink-Verwaltung: Uebersicht, Items, Raids, Mythic+ (Core)
 ## Author: exo-Twinks Contributors
-## Version: 1.9.0
+## Version: 1.9.1
 ## Group: exo-Twinks
 ## Category: Other
 ## Category-deDE: Sonstiges
