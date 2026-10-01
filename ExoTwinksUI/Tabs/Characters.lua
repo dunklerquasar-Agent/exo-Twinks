@@ -223,6 +223,7 @@ function Tab.BuildMatrix()
 				raidLocks = locks,
 				currencies = currencies,
 				weeklies = Exo.API.GetWeeklies(charKey),
+				mailbox = Exo.API.GetMails(charKey), -- Post-Zeile (1.11.0)
 			}
 			for id, c in pairs(currencies) do
 				currencyNames[id] = c.name or ("Waehrung " .. id)
@@ -280,6 +281,7 @@ function Tab.BuildMatrix()
 	if rowOn("lastSeen") then
 		rows[#rows + 1] = { kind = "lastSeen", label = "Zuletzt online" }
 	end
+	if rowOn("mail") then rows[#rows + 1] = { kind = "mail", label = "Post" } end
 	if rowOn("ilvl") then rows[#rows + 1] = { kind = "ilvl", label = "Itemlevel" } end
 	if rowOn("mplus") then
 		rows[#rows + 1] = { kind = "rating", label = "M+ Wertung" }
@@ -362,6 +364,26 @@ local function isMaxLevel(summary)
 end
 
 -- Zelle fuer (Zeile, Char) -- zentraler Dispatcher (Textzellen)
+-- "Post"-Zelle (rein, testbar, 1.11.0): Mail-Anzahl, Warnfarbe nach fruehestem
+-- Ablauf (rot <= 3 Tage, gelb <= 7 Tage) -- AltVault-Wunsch "Post-Indikator"
+function Tab.FormatMailCell(mailbox)
+	local mails = mailbox and mailbox.mails
+	if not mails or #mails == 0 then return "-" end
+	local minDays
+	for _, mail in ipairs(mails) do
+		if not minDays or (mail.daysLeft or 0) < minDays then
+			minDays = mail.daysLeft or 0
+		end
+	end
+	local text = (#mails == 1) and "1 Mail" or (#mails .. " Mails")
+	if minDays <= 3 then
+		return string.format("|cffff3333%s (%d T.!)|r", text, math.floor(minDays))
+	elseif minDays <= 7 then
+		return string.format("|cffffd700%s (%d T.)|r", text, math.floor(minDays))
+	end
+	return text
+end
+
 -- Spalten-Hervorhebung (rein, testbar, 1.10.0):
 -- "current" = eingeloggter Char (Akzentfarbe) | "zebra" | nil
 function Tab.ColumnHighlight(char, columnIndex)
@@ -405,6 +427,8 @@ function Tab.CellText(row, char)
 	elseif row.kind == "rest" then
 		if isMaxLevel(s) then return "-" end
 		return Exo.UI.Format.RestText(Exo.UI.Format.RestPercent(s.restXP, s.xpMax))
+	elseif row.kind == "mail" then
+		return Tab.FormatMailCell(char.mailbox)
 	elseif row.kind == "lastSeen" then
 		if s.isCurrent then return "|cff1eff00online|r" end
 		return Exo.UI.Format.TimeAgo(s.lastSeen, Exo.WowAPI.Now())

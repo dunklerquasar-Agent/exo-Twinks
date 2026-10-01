@@ -83,8 +83,14 @@ local function copyEntry(itemID, entry)
 	local copy = { itemID = itemID, total = entry.total, warband = entry.warband,
 		guilds = {}, chars = {} }
 	for charKey, charEntry in pairs(entry.chars) do
-		copy.chars[charKey] = { bags = charEntry.bags, bank = charEntry.bank,
-			auctions = charEntry.auctions or 0 }
+		-- Versteckte Chars (1.11.0) aus Ergebnis UND Summe herausrechnen
+		if API.IsCharacterHidden and API.IsCharacterHidden(charKey) then
+			copy.total = copy.total - (charEntry.bags or 0) - (charEntry.bank or 0)
+				- (charEntry.auctions or 0)
+		else
+			copy.chars[charKey] = { bags = charEntry.bags, bank = charEntry.bank,
+				auctions = charEntry.auctions or 0 }
+		end
 	end
 	for guildName, count in pairs(entry.guilds or {}) do
 		copy.guilds[guildName] = count

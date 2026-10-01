@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.11.0] - Community-Wuensche II
+### Neu
+- Charaktere ausblenden: Im Designer unter "Chars anzeigen" einzelne
+  Charaktere abwaehlen - sie verschwinden aus allen Ansichten, Suche,
+  Item-Zaehlung und Tooltips. Die Daten bleiben erhalten (wieder einblenden
+  jederzeit moeglich); "Alles zuruecksetzen" blendet alle wieder ein.
+- Post-Indikator: Neue Zeile "Post" in der Charaktere-Matrix mit Mail-Anzahl
+  und Ablauf-Warnung (gelb = laeuft in 7 Tagen ab, rot = in 3 Tagen).
+  Wie alle Zeilen im Designer abschaltbar.
+
 ## [1.10.0] - Community-Wuensche I
 ### Neu (aus der Spielerwunsch-Recherche, docs/RECHERCHE-SPIELERWUENSCHE-2026.md)
 - Fensterposition wird gemerkt und beim naechsten Oeffnen wiederhergestellt;
