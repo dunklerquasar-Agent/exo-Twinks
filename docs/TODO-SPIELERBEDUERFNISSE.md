@@ -14,7 +14,7 @@
 - [x] ✅ Charaktere-Tab im AlterEgo-Stil: Matrix aller Chars (Gold, Item-Level,
       Weeklies, Vault, Currencies)
 - [ ] ⬜ Spielzeit (/played) je Char + Gesamt erfassen und anzeigen
-- [ ] ⬜ Rest-XP / Level-Fortschritt anzeigen (fuer Level-Phase)
+- [x] ✅ Rest-XP / Level-Fortschritt anzeigen (Zeilen Level/Erholt; bestaetigt 1.10.0)
 - [ ] ⬜ Gesamtsummen-Zeile: Gold pro Realm und ueber den ganzen Account
 - [ ] ⬜ Charaktere markieren/gruppieren: „Bank-Alt", eigene Gruppen,
       Chars ausblenden
@@ -68,3 +68,13 @@
 | 1.0.0  | M+-Komfort (Ansagen/Teleport/Affixe) + Feinschliff |
 | danach | Neue Kandidaten aus dieser Liste: /played + Rest-XP,
 Gold-Summen, Bank-Alt-Gruppen, Questlog, Reputationen, Suchfilter |
+
+## 6. Community-Wuensche (Recherche Okt 2026, docs/RECHERCHE-SPIELERWUENSCHE-2026.md)
+
+- [x] ✅ Fensterposition merken + Reset-Button (1.10.0)
+- [x] ✅ Fenster-Skalierung 70-130 % im Designer (1.10.0)
+- [x] ✅ Eingeloggten Char in der Matrix hervorheben (1.10.0)
+- [x] ✅ Vault-Status im Minimap-Tooltip (1.10.0)
+- [ ] ⬜ Charaktere ausblenden (Q6, geplant 1.11.0)
+- [ ] ⬜ Post-Indikator mit Ablauf-Warnung (Q8, geplant 1.11.0)
+- [ ] ⬜ !keys-Chat-Antwort, Export, PvP-Spalten (M1/M3/M4, danach)

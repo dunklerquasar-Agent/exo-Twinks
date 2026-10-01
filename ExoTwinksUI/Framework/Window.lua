@@ -44,12 +44,29 @@ local function createWindow()
 	local savedW = tonumber(Exo.API.GetOption("window.width")) or WINDOW_W
 	local savedH = tonumber(Exo.API.GetOption("window.height")) or WINDOW_H
 	window:SetSize(math.max(WINDOW_W, savedW), math.max(WINDOW_H, savedH))
-	window:SetPoint("CENTER")
+	-- Gemerkte Position anwenden (1.10.0), Fallback: zentriert
+	local pos = Exo.API.GetOption("window.pos")
+	if type(pos) == "table" and type(pos.point) == "string" then
+		window:SetPoint(pos.point, UIParent, pos.relPoint or pos.point,
+			tonumber(pos.x) or 0, tonumber(pos.y) or 0)
+	else
+		window:SetPoint("CENTER")
+	end
+	-- Gemerkte Skalierung anwenden (1.10.0)
+	window:SetScale(UI.ClampScale(Exo.API.GetOption("window.scale")))
 	window:SetMovable(true)
 	window:EnableMouse(true)
 	window:RegisterForDrag("LeftButton")
 	window:SetScript("OnDragStart", function(self) self:StartMoving() end)
-	window:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+	window:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
+		-- Position merken (1.10.0)
+		local point, _, relPoint, x, y = self:GetPoint()
+		if type(point) == "string" then
+			Exo.API.SetOption("window.pos", { point = point,
+				relPoint = relPoint or point, x = x or 0, y = y or 0 })
+		end
+	end)
 
 	-- Vergroesserbar: Griff unten rechts, Mindestgroesse = Standardgroesse
 	window:SetResizable(true)
@@ -246,6 +263,32 @@ function UI:SetWindowSize(w, h)
 end
 
 function UI:GetWindow() return window end
+
+-- Fenster-Skalierung (1.10.0) ---------------------------------------------------------
+
+-- Skalierung auf 0.7-1.3 klemmen (rein, testbar)
+function UI.ClampScale(value)
+	local scale = tonumber(value) or 1
+	if scale < 0.7 then scale = 0.7 end
+	if scale > 1.3 then scale = 1.3 end
+	return scale
+end
+
+-- Live anwenden (Designer-Button ruft das nach SetOption auf)
+function UI:ApplyWindowScale()
+	if window then
+		window:SetScale(UI.ClampScale(Exo.API.GetOption("window.scale")))
+	end
+end
+
+-- Gemerkte Fensterposition verwerfen und zentrieren (1.10.0)
+function UI:ResetWindowPosition()
+	Exo.API.SetOption("window.pos", nil)
+	if window then
+		window:ClearAllPoints()
+		window:SetPoint("CENTER")
+	end
+end
 
 function UI:RefreshActiveTab()
 	if window and window:IsShown() and self.activeTabId then
