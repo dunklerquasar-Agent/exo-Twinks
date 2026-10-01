@@ -229,6 +229,37 @@ function Tab.ToggleMinimap()
 	end
 end
 
+-- Fenster-Skalierung zyklisch durchschalten (1.10.0): 70 % -> ... -> 130 % -> 70 %
+Tab.SCALE_STEPS = { 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3 }
+
+function Tab.CycleWindowScale()
+	local current = tonumber(Exo.API.GetOption("window.scale")) or 1
+	local nextScale = Tab.SCALE_STEPS[1]
+	for index, step in ipairs(Tab.SCALE_STEPS) do
+		if math.abs(step - current) < 0.01 then
+			nextScale = Tab.SCALE_STEPS[index + 1] or Tab.SCALE_STEPS[1]
+			break
+		end
+	end
+	Exo.API.SetOption("window.scale", nextScale)
+	if Exo.UI.ApplyWindowScale then Exo.UI:ApplyWindowScale() end
+	return nextScale
+end
+
+-- Button-Beschriftung "Skalierung: 110 %" (rein, testbar)
+function Tab.GetScaleLabel()
+	local scale = tonumber(Exo.API.GetOption("window.scale")) or 1
+	return string.format("Skalierung: %d %%", math.floor(scale * 100 + 0.5))
+end
+
+function Tab.ResetWindowPosition()
+	if Exo.UI.ResetWindowPosition then
+		Exo.UI:ResetWindowPosition()
+	else
+		Exo.API.SetOption("window.pos", nil)
+	end
+end
+
 function Tab.ToggleRememberSize()
 	local remember = Exo.API.GetOption("window.remember", true)
 	Exo.API.SetOption("window.remember", not remember)
@@ -381,6 +412,18 @@ local function buildUI(self, content)
 	sizes[#sizes + 1] = {
 		group = "minimap", key = "minimap", label = "Minimap-Button", width = 116,
 		onClick = function() Tab.ToggleMinimap() end,
+	}
+	-- 1.10.0: Skalierung (zyklisch) + Fensterposition zuruecksetzen
+	sizes[#sizes + 1] = {
+		group = "scale", key = "scale", label = Tab.GetScaleLabel(), width = 120,
+		onClick = function()
+			Tab.CycleWindowScale()
+			if self._content then self:Render(self._content) end
+		end,
+	}
+	sizes[#sizes + 1] = {
+		group = "resetpos", key = "resetpos", label = "Position zentrieren", width = 130,
+		onClick = function() Tab.ResetWindowPosition() end,
 	}
 	row("Fenster", sizes, 84)
 
@@ -542,6 +585,11 @@ function Tab:RefreshStates()
 	local remember = API.GetOption("window.remember", true)
 	for _, btn in pairs(self._buttons.remember or {}) do
 		btn:SetSelected(remember and true or false)
+	end
+	-- Skalierungs-Button zeigt den aktuellen Wert (1.10.0)
+	for _, btn in pairs(self._buttons.scale or {}) do
+		btn:SetText(Tab.GetScaleLabel())
+		btn:SetSelected(math.abs((tonumber(API.GetOption("window.scale")) or 1) - 1) > 0.01)
 	end
 	for _, btn in pairs(self._buttons.minimap or {}) do
 		btn:SetSelected(Tab.IsMinimapShown())

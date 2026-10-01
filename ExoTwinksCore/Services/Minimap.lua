@@ -26,6 +26,23 @@ button:SetScript("OnClick", function()
 	end
 end)
 
+-- Vault-Kurzform "V 1/2/0" = freigeschaltete Slots Raid/M+/Welt (rein, testbar, 1.10.0)
+function Exo.MinimapVaultShort(mplus)
+	if not mplus or type(mplus.vault) ~= "table" or #mplus.vault == 0 then return nil end
+	local function unlockedOf(vaultType)
+		local unlocked = 0
+		for _, activity in ipairs(mplus.vault) do
+			if activity.type == vaultType
+				and (activity.progress or 0) >= (activity.threshold or math.huge) then
+				unlocked = unlocked + 1
+			end
+		end
+		return unlocked
+	end
+	-- Reihenfolge wie im Charaktere-Tab: Raids(3) / Mythic+(1) / Welt(6)
+	return string.format("V %d/%d/%d", unlockedOf(3), unlockedOf(1), unlockedOf(6))
+end
+
 -- Kompakt-Tooltip (1.0.0): Top-Chars, Gold gesamt, Mail-Warnung (rein, testbar)
 function Exo.BuildMinimapTooltipLines()
 	local lines = {}
@@ -42,11 +59,19 @@ function Exo.BuildMinimapTooltipLines()
 	table.sort(chars, function(a, b) return (a.ilvl or 0) > (b.ilvl or 0) end)
 
 	local shown = math.min(#chars, 8)
+	local anyVault = false
 	for i = 1, shown do
 		local s = chars[i]
-		lines[#lines + 1] = string.format("%s  Lv %d  iLvl %d  %dg",
+		-- Vault-Status je Char anhaengen (1.10.0)
+		local vault = Exo.MinimapVaultShort(Exo.API.GetMythicPlus(s.key))
+		if vault then anyVault = true end
+		lines[#lines + 1] = string.format("%s  Lv %d  iLvl %d  %dg%s",
 			(s.name ~= "" and s.name) or s.key, s.level or 0,
-			math.floor(s.ilvl or 0), math.floor((s.gold or 0) / 10000))
+			math.floor(s.ilvl or 0), math.floor((s.gold or 0) / 10000),
+			vault and ("  |cff1784d1" .. vault .. "|r") or "")
+	end
+	if anyVault then
+		lines[#lines + 1] = "|cff808080V = Schatzkammer Raid/M+/Welt|r"
 	end
 	if #chars > shown then
 		lines[#lines + 1] = string.format("|cff808080+ %d weitere|r", #chars - shown)
