@@ -2,6 +2,18 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.10.0] - Community-Wuensche I
+### Neu (aus der Spielerwunsch-Recherche, docs/RECHERCHE-SPIELERWUENSCHE-2026.md)
+- Fensterposition wird gemerkt und beim naechsten Oeffnen wiederhergestellt;
+  Designer: neuer Button "Position zentrieren".
+- Fenster-Skalierung 70-130 % als Zyklus-Button im Designer ("Skalierung: X %").
+- Charaktere-Matrix: der eingeloggte Charakter wird hervorgehoben
+  (Akzent-Spalte + Pfeil im Spaltenkopf).
+- Minimap-Tooltip zeigt je Char den Schatzkammer-Status "V Raid/M+/Welt".
+### Hinweis
+- Rest-XP/Level-Fortschritt und "Runs diese Woche" waren bereits vorhanden
+  (Zeilen "Level"/"Erholt"/"Schatzkammer" im Charaktere-Tab).
+
 ## [1.9.2] - Korrekte Itemlevel bei M+-aufgewerteten Items
 ### Behoben (User-Report: z. B. Siegel-Ring zeigte falsches Itemlevel)
 - Itemlevel angelegter Ausruestung wird jetzt ueber die Item-INSTANZ ermittelt

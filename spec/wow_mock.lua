@@ -54,6 +54,24 @@ function mock.Reset()
 		frame.GetScript = function(self, handler) return self._scripts[handler] end
 		frame.Show = function(self) self._shown = true end
 		frame.Hide = function(self) self._shown = false end
+		-- Position/Skalierung nachvollziehbar speichern (1.10.0)
+		frame.SetPoint = function(self, point, a, b, c, d)
+			if type(a) == "number" then
+				self._point = { point = point, relPoint = point, x = a, y = b }
+			else
+				self._point = { point = point, rel = a,
+					relPoint = type(b) == "string" and b or point,
+					x = tonumber(c) or 0, y = tonumber(d) or 0 }
+			end
+		end
+		frame.GetPoint = function(self)
+			local p = self._point
+			if not p then return end
+			return p.point, p.rel, p.relPoint, p.x, p.y
+		end
+		frame.ClearAllPoints = function(self) self._point = nil end
+		frame.SetScale = function(self, scale) self._scale = scale end
+		frame.GetScale = function(self) return self._scale or 1 end
 		frame.IsShown = function(self) return self._shown end
 		frame.SetText = function(self, text) self._text = tostring(text or "") end
 		frame.GetText = function(self) return self._text end
