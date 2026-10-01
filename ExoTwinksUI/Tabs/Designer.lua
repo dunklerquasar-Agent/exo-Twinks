@@ -56,6 +56,7 @@ Tab.CHAR_ROWS = {
 	{ id = "played", label = "Gespielt" },
 	{ id = "rest", label = "Erholt" },
 	{ id = "lastSeen", label = "Zuletzt online" },
+	{ id = "mail", label = "Post" },
 	{ id = "ilvl", label = "Itemlevel" },
 	{ id = "mplus", label = "Mythic+" },
 	{ id = "vault", label = "Schatzkammer" },
@@ -252,6 +253,11 @@ function Tab.GetScaleLabel()
 	return string.format("Skalierung: %d %%", math.floor(scale * 100 + 0.5))
 end
 
+-- Charaktere ausblenden (1.11.0): sichtbar = Button ausgewaehlt
+function Tab.ToggleCharHidden(charKey)
+	Exo.API.SetCharacterHidden(charKey, not Exo.API.IsCharacterHidden(charKey))
+end
+
 function Tab.ResetWindowPosition()
 	if Exo.UI.ResetWindowPosition then
 		Exo.UI:ResetWindowPosition()
@@ -286,6 +292,9 @@ function Tab.ResetAll()
 	Exo.API.SetOption("window.remember", nil)
 	Exo.API.SetOption("window.width", nil)
 	Exo.API.SetOption("window.height", nil)
+	Exo.API.SetOption("window.pos", nil)   -- 1.10.0
+	Exo.API.SetOption("window.scale", nil) -- 1.10.0
+	Exo.API.SetOption("hiddenChars", nil)  -- 1.11.0
 	Exo.API.SetOption("nav.position", nil)
 	if Exo.UI.ApplyNavLayout then Exo.UI:ApplyNavLayout() end
 	Exo.API.SetOption("minimap.hide", nil)
@@ -549,6 +558,26 @@ local function buildUI(self, content)
 	row("Charaktere: Zeilen", first, 88)
 	row("", second, 88)
 
+	-- Charaktere ausblenden (1.11.0): ausgewaehlt = sichtbar; Daten bleiben erhalten
+	local hideLabel = "Chars anzeigen"
+	local hideChunk = {}
+	for _, charKey in ipairs(Exo.API.GetCharacterKeys(true)) do
+		local info = Exo.API.GetCharacterInfo(charKey)
+		local shortName = (info and info.name ~= "" and info.name) or charKey
+		hideChunk[#hideChunk + 1] = {
+			group = "hideChar", key = charKey, label = shortName,
+			onClick = function()
+				Tab.ToggleCharHidden(charKey)
+				self:RefreshStates()
+			end,
+		}
+		if #hideChunk == 5 then
+			row(hideLabel, hideChunk, 88)
+			hideLabel, hideChunk = "", {}
+		end
+	end
+	if #hideChunk > 0 then row(hideLabel, hideChunk, 88) end
+
 	-- Fusszeile: Zuruecksetzen + Hinweis
 	local reset = Widgets.Button(content, "Alles zuruecksetzen", 160, 20, function()
 		Tab.ResetAll()
@@ -645,6 +674,11 @@ function Tab:RefreshStates()
 
 	for id, btn in pairs(self._buttons.charRows or {}) do
 		btn:SetSelected(Tab.IsCharRowEnabled(id))
+	end
+
+	-- Chars anzeigen/ausblenden (1.11.0): ausgewaehlt = sichtbar
+	for charKey, btn in pairs(self._buttons.hideChar or {}) do
+		btn:SetSelected(not API.IsCharacterHidden(charKey))
 	end
 end
 
