@@ -362,6 +362,24 @@ local function isMaxLevel(summary)
 end
 
 -- Zelle fuer (Zeile, Char) -- zentraler Dispatcher (Textzellen)
+-- Spalten-Hervorhebung (rein, testbar, 1.10.0):
+-- "current" = eingeloggter Char (Akzentfarbe) | "zebra" | nil
+function Tab.ColumnHighlight(char, columnIndex)
+	if char and char.summary and char.summary.isCurrent then return "current" end
+	if char and columnIndex % 2 == 0 then return "zebra" end
+	return nil
+end
+
+-- Spaltenkopf (rein, testbar, 1.10.0): eingeloggter Char bekommt einen Akzent-Pfeil
+function Tab.HeaderText(char)
+	if not char then return "" end
+	local text = Exo.UI.Format.ClassName(char.name, char.classID)
+	if char.summary and char.summary.isCurrent then
+		return "|cff" .. Exo.UI.Widgets.COLORS.accentHex .. "\226\150\182|r " .. text
+	end
+	return text
+end
+
 function Tab.CellText(row, char)
 	local s, mplus = char.summary, char.mplus
 	if row.kind == "realm" then
@@ -568,8 +586,14 @@ local function buildUI(self, content)
 
 			for i = 1, Tab.CHARS_PER_PAGE do
 				local char = self._pageChars and self._pageChars[i]
-				-- Spalten-Zebra nur unter belegten Spalten
-				if char and i % 2 == 0 then
+				-- Spalten-Hintergrund: eingeloggter Char in Akzentfarbe, sonst Zebra (1.10.0)
+				local highlight = Tab.ColumnHighlight(char, i)
+				if highlight == "current" then
+					local a = Exo.UI.Widgets.COLORS.accent
+					row.colbg[i]:SetColorTexture(a[1], a[2], a[3], 0.16)
+					row.colbg[i]:Show()
+				elseif highlight == "zebra" then
+					row.colbg[i]:SetColorTexture(1, 1, 1, 0.035)
 					row.colbg[i]:Show()
 				else
 					row.colbg[i]:Hide()
@@ -675,8 +699,7 @@ function Tab:Render(content)
 
 	for i = 1, Tab.CHARS_PER_PAGE do
 		local char = pageChars[i]
-		self._headerCells[i]:SetText(char
-			and Exo.UI.Format.ClassName(char.name, char.classID) or "")
+		self._headerCells[i]:SetText(Tab.HeaderText(char))
 	end
 
 	if pages > 1 then
