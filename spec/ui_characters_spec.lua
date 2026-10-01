@@ -104,29 +104,30 @@ describe("ExoTwinksUI / Charaktere-Tab (AlterEgo-Matrix)", function()
 				kinds[i], labels[i] = row.kind, row.label
 			end
 
-			-- 15 feste (inkl. "Taschen frei", 1.5.0) + 1 Sektion + 2 Dungeons
-			-- + 1 Raid-Sektion + 2 Boss-Zeilen = 21
-			assert.equal(21, #matrix.rows)
+			-- 16 feste (inkl. "Taschen frei" 1.5.0 + "Post" 1.11.0) + 1 Sektion
+			-- + 2 Dungeons + 1 Raid-Sektion + 2 Boss-Zeilen = 22
+			assert.equal(22, #matrix.rows)
 			assert.equal("realm", kinds[1])
 			assert.equal("bags", kinds[4]) -- neu in 1.5.0, direkt nach Gold
-			assert.equal("vaultstatus", kinds[11])
-			assert.equal("raids", kinds[15])
-			assert.equal("section", kinds[16])
-			assert.equal("Mythic+ (Season-Best)", labels[16])
-			assert.equal("Atal'Dazar", labels[17]) -- alphabetisch
-			assert.equal("Black Rook Hold", labels[18])
-			assert.equal("section", kinds[19])
-			assert.equal("Amirdrassil", labels[19])
-			assert.equal(1700100000, matrix.rows[19].resetAt)
+			assert.equal("mail", kinds[8]) -- neu in 1.11.0, nach "Zuletzt online"
+			assert.equal("vaultstatus", kinds[12])
+			assert.equal("raids", kinds[16])
+			assert.equal("section", kinds[17])
+			assert.equal("Mythic+ (Season-Best)", labels[17])
+			assert.equal("Atal'Dazar", labels[18]) -- alphabetisch
+			assert.equal("Black Rook Hold", labels[19])
+			assert.equal("section", kinds[20])
+			assert.equal("Amirdrassil", labels[20])
+			assert.equal(1700100000, matrix.rows[20].resetAt)
 			-- Schwierigkeiten aufsteigend: Heroisch vor Mythisch
-			assert.equal("Heroisch", labels[20])
-			assert.equal("Mythisch", labels[21])
-			assert.equal("H", matrix.rows[20].diff)
+			assert.equal("Heroisch", labels[21])
+			assert.equal("Mythisch", labels[22])
+			assert.equal("H", matrix.rows[21].diff)
 		end)
 
-		it("ohne M+/Raid-Daten: nur die 15 festen Zeilen", function()
+		it("ohne M+/Raid-Daten: nur die 16 festen Zeilen", function()
 			seedChar("Default.Testrealm.Frisch", { ilvl = 0 })
-			assert.equal(15, #Tab.BuildMatrix().rows)
+			assert.equal(16, #Tab.BuildMatrix().rows)
 		end)
 	end)
 

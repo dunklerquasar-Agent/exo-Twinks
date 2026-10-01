@@ -16,8 +16,7 @@
 - [ ] ⬜ Spielzeit (/played) je Char + Gesamt erfassen und anzeigen
 - [x] ✅ Rest-XP / Level-Fortschritt anzeigen (Zeilen Level/Erholt; bestaetigt 1.10.0)
 - [ ] ⬜ Gesamtsummen-Zeile: Gold pro Realm und ueber den ganzen Account
-- [ ] ⬜ Charaktere markieren/gruppieren: „Bank-Alt", eigene Gruppen,
-      Chars ausblenden
+- [x] ✅ Chars ausblenden (1.11.0); Rollen-Filter Main/Bank/... seit 1.5.0
 
 ## 2. Inventar & Suche ueber alle Charaktere  *(laut User am wichtigsten)*
 
@@ -75,6 +74,6 @@ Gold-Summen, Bank-Alt-Gruppen, Questlog, Reputationen, Suchfilter |
 - [x] ✅ Fenster-Skalierung 70-130 % im Designer (1.10.0)
 - [x] ✅ Eingeloggten Char in der Matrix hervorheben (1.10.0)
 - [x] ✅ Vault-Status im Minimap-Tooltip (1.10.0)
-- [ ] ⬜ Charaktere ausblenden (Q6, geplant 1.11.0)
-- [ ] ⬜ Post-Indikator mit Ablauf-Warnung (Q8, geplant 1.11.0)
+- [x] ✅ Charaktere ausblenden im Designer (1.11.0)
+- [x] ✅ Post-Indikator mit Ablauf-Warnung in der Matrix (1.11.0)
 - [ ] ⬜ !keys-Chat-Antwort, Export, PvP-Spalten (M1/M3/M4, danach)

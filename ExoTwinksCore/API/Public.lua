@@ -11,9 +11,30 @@ Exo.API = API
 
 -- Charaktere ----------------------------------------------------------------------
 
-function API.GetCharacterKeys()
+-- Versteckte Charaktere (1.11.0): Option "hiddenChars" = { [charKey] = true }.
+-- Daten werden weiter gesammelt -- nur die Anzeige/Aggregation filtert.
+function API.IsCharacterHidden(charKey)
+	local hidden = API.GetOption("hiddenChars")
+	return type(hidden) == "table" and hidden[charKey] == true
+end
+
+function API.SetCharacterHidden(charKey, isHidden)
+	local hidden = API.GetOption("hiddenChars")
+	if type(hidden) ~= "table" then hidden = {} end
+	hidden[charKey] = isHidden and true or nil
+	API.SetOption("hiddenChars", hidden)
+end
+
+-- Ohne Argument: nur sichtbare Chars; includeHidden=true liefert alle (Designer)
+function API.GetCharacterKeys(includeHidden)
 	if not Exo.Store:IsReady() then return {} end
-	return Exo.Store:GetCharacterKeys()
+	local keys = Exo.Store:GetCharacterKeys()
+	if includeHidden then return keys end
+	local visible = {}
+	for _, key in ipairs(keys) do
+		if not API.IsCharacterHidden(key) then visible[#visible + 1] = key end
+	end
+	return visible
 end
 
 function API.GetCharacterInfo(charKey)
