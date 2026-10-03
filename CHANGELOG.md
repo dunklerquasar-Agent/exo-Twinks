@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.13.0] - "In KM-Bank einlagern"-Button
+### Neu (User-Wunsch)
+- Neuer Button "In KM-Bank einlagern" in den Reitern KM-Bank und KM-Items:
+  legt ALLE kriegsmeutengebundenen Items aus den Taschen (wb-Flag
+  "bis zum Anlegen" + dauerhaft gebundene, Bind-Typ 7/8) in die
+  Kriegsmeuten-Bank.
+- Funktioniert nur bei geoeffneter Bank (WoW-Regel) - sonst erscheint
+  ein Hinweis in der Fusszeile; nach dem Einlagern wird die Anzahl
+  der bewegten Stapel gemeldet.
+
 ## [1.12.0] - Item-Kern komplett (Post + Angelegt)
 ### Neu (Kern-Auftrag: Item-Verwaltung ueber alle Twinks)
 - Post-Anhaenge zaehlen jetzt zum Bestand: Tooltip zeigt "Post 4",
