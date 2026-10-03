@@ -46,9 +46,9 @@ describe("Exo.API ItemCounts", function()
 
 			assert.equal(22, counts.total) -- 10+2+5+5
 			assert.equal(5, counts.warband)
-			assert.same({ bags = 10, bank = 2, auctions = 0 },
+			assert.same({ bags = 10, bank = 2, auctions = 0, mail = 0, equipped = 0 },
 				counts.chars["Default.Testrealm.Anna"])
-			assert.same({ bags = 5, bank = 0, auctions = 0 },
+			assert.same({ bags = 5, bank = 0, auctions = 0, mail = 0, equipped = 0 },
 				counts.chars["Default.Testrealm.Borg"])
 		end)
 
