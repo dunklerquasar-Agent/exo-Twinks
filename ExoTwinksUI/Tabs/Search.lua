@@ -42,6 +42,8 @@ Tab.LOCATION_STEPS = {
 	{ id = "warband", label = "Ort: Kriegsmeute" },
 	{ id = "guild", label = "Ort: Gildenbank" },
 	{ id = "auctions", label = "Ort: Auktionshaus" },
+	{ id = "mail", label = "Ort: Post" },
+	{ id = "equipped", label = "Ort: Angelegt" },
 }
 
 Tab.ROLE_STEPS = {
@@ -99,7 +101,8 @@ function Tab.MatchesFilters(result, filters, currentRealm)
 			if count > 0 then found = true break end
 		end
 		if not found then return false end
-	elseif location == "bags" or location == "bank" or location == "auctions" then
+	elseif location == "bags" or location == "bank" or location == "auctions"
+		or location == "mail" or location == "equipped" then
 		local found = false
 		for _, entry in pairs(result.chars or {}) do
 			if (entry[location] or 0) > 0 then found = true break end
@@ -110,7 +113,8 @@ function Tab.MatchesFilters(result, filters, currentRealm)
 		local Detail = Exo.UI.CharacterDetail
 		local found = false
 		for charKey, entry in pairs(result.chars or {}) do
-			if (entry.bags or 0) + (entry.bank or 0) + (entry.auctions or 0) > 0
+			if (entry.bags or 0) + (entry.bank or 0) + (entry.auctions or 0)
+				+ (entry.mail or 0) + (entry.equipped or 0) > 0
 				and Detail and Detail.GetRole(charKey) == filters.role then
 				found = true
 				break
@@ -121,7 +125,8 @@ function Tab.MatchesFilters(result, filters, currentRealm)
 	if filters.realmOnly then
 		local found = false
 		for charKey, entry in pairs(result.chars or {}) do
-			if (entry.bags or 0) + (entry.bank or 0) > 0 then
+			if (entry.bags or 0) + (entry.bank or 0) + (entry.mail or 0)
+				+ (entry.equipped or 0) > 0 then
 				local meta = Exo.API.GetCharacterInfo(charKey)
 				if meta and meta.realm == currentRealm then found = true break end
 			end
@@ -191,9 +196,13 @@ function Tab.BuildBreakdown(counts)
 			entry = entry,
 		}
 	end
+	-- Gesamtmenge eines Chars ueber alle Quellen (1.12.0)
+	local function charTotal(entry)
+		return entry.bags + entry.bank + (entry.auctions or 0)
+			+ (entry.mail or 0) + (entry.equipped or 0)
+	end
 	table.sort(charRows, function(a, b)
-		local ca = a.entry.bags + a.entry.bank + (a.entry.auctions or 0)
-		local cb = b.entry.bags + b.entry.bank + (b.entry.auctions or 0)
+		local ca, cb = charTotal(a.entry), charTotal(b.entry)
 		if ca ~= cb then return ca > cb end
 		return a.plain < b.plain
 	end)
@@ -205,9 +214,14 @@ function Tab.BuildBreakdown(counts)
 		if (row.entry.auctions or 0) > 0 then
 			sources[#sources + 1] = "AH " .. row.entry.auctions
 		end
+		if (row.entry.mail or 0) > 0 then
+			sources[#sources + 1] = "Post " .. row.entry.mail
+		end
+		if (row.entry.equipped or 0) > 0 then
+			sources[#sources + 1] = "Angelegt " .. row.entry.equipped
+		end
 		parts[#parts + 1] = string.format("%s %d (%s)", row.name,
-			row.entry.bags + row.entry.bank + (row.entry.auctions or 0),
-			table.concat(sources, ", "))
+			charTotal(row.entry), table.concat(sources, ", "))
 	end
 
 	if counts.warband > 0 then
