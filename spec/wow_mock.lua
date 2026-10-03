@@ -336,8 +336,16 @@ function mock.Reset()
 	-- Container: state.containers[bagID] = { size = n, items = { [slot] = { id, count } } }
 	state.containers = {}
 	state.equippedBags = {} -- [bagID] = itemID der ausgeruesteten Tasche
+	state.usedContainerItems = {}
 	_G.C_Container = {
 		ContainerIDToInventoryID = function(bagID) return 30 + bagID end,
+		-- Einlagern (1.13.0): Aufrufe protokollieren + Item aus dem Container nehmen
+		UseContainerItem = function(bagID, slot, _, bankType)
+			state.usedContainerItems[#state.usedContainerItems + 1] =
+				{ bagID = bagID, slot = slot, bankType = bankType }
+			local bag = state.containers[bagID]
+			if bag and bag.items then bag.items[slot] = nil end
+		end,
 		GetContainerNumSlots = function(bagID)
 			local bag = state.containers[bagID]
 			return bag and bag.size or 0
@@ -446,7 +454,8 @@ function mock.Reset()
 
 	-- Tooltip-Pipeline (TooltipDataProcessor)
 	state.tooltipHandlers = {}
-	_G.Enum = { TooltipDataType = { Item = 17 } }
+	_G.Enum = { TooltipDataType = { Item = 17 },
+		BankType = { Character = 0, Account = 1 } }
 	_G.TooltipDataProcessor = {
 		AddTooltipPostCall = function(_, fn)
 			state.tooltipHandlers[#state.tooltipHandlers + 1] = fn
@@ -518,7 +527,13 @@ end
 -- Standard-Ladefolge von ExoTwinksCore (entspricht der TOC)
 function mock.LoadExoCore(root)
 	root = root or "ExoTwinksCore"
-	return mock.LoadAddon({
+
+-- Einlagern-Protokoll (1.13.0): alle UseContainerItem-Aufrufe
+function mock.GetUsedContainerItems()
+	return state.usedContainerItems or {}
+end
+
+return mock.LoadAddon({
 		root .. "/Core/Log.lua",
 		root .. "/Core/WowAPI.lua",
 		root .. "/Core/EventBus.lua",
@@ -554,14 +569,26 @@ end
 -- Laedt das Data-Addon (Saisondaten); greift wie die UI ueber das globale Exo zu.
 function mock.LoadExoData(root)
 	root = root or "ExoTwinksData"
-	return mock.LoadAddon({ root .. "/Season.lua" }, "ExoTwinksData")
+
+-- Einlagern-Protokoll (1.13.0): alle UseContainerItem-Aufrufe
+function mock.GetUsedContainerItems()
+	return state.usedContainerItems or {}
+end
+
+return mock.LoadAddon({ root .. "/Season.lua" }, "ExoTwinksData")
 end
 
 -- Laedt ExoTwinksUI in den bestehenden Exo-Namespace (wie in-game via LoadOnDemand).
 -- WICHTIG: ExoTwinksUI greift ueber das globale Exo zu (eigener Vararg-Namespace in-game).
 function mock.LoadExoUI(root)
 	root = root or "ExoTwinksUI"
-	return mock.LoadAddon({
+
+-- Einlagern-Protokoll (1.13.0): alle UseContainerItem-Aufrufe
+function mock.GetUsedContainerItems()
+	return state.usedContainerItems or {}
+end
+
+return mock.LoadAddon({
 		root .. "/Framework/Format.lua",
 		root .. "/Framework/Widgets.lua",
 		root .. "/Framework/Theme.lua",
@@ -804,6 +831,12 @@ end
 
 function mock.Now()
 	return state.now
+end
+
+
+-- Einlagern-Protokoll (1.13.0): alle UseContainerItem-Aufrufe
+function mock.GetUsedContainerItems()
+	return state.usedContainerItems or {}
 end
 
 return mock
