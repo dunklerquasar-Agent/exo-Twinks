@@ -41,7 +41,17 @@ local function sourceText(charEntry)
 			.. Tooltip.TabSuffix(charEntry.bankTabs)
 	end
 	if (charEntry.auctions or 0) > 0 then parts[#parts + 1] = "AH " .. charEntry.auctions end
+	if (charEntry.mail or 0) > 0 then parts[#parts + 1] = "Post " .. charEntry.mail end
+	if (charEntry.equipped or 0) > 0 then
+		parts[#parts + 1] = "Angelegt " .. charEntry.equipped
+	end
 	return table.concat(parts, ", ")
+end
+
+-- Gesamtmenge eines Chars ueber alle Quellen (1.12.0)
+local function charTotal(charEntry)
+	return charEntry.bags + charEntry.bank + (charEntry.auctions or 0)
+		+ (charEntry.mail or 0) + (charEntry.equipped or 0)
 end
 
 function Tooltip.BuildLines(counts)
@@ -57,7 +67,7 @@ function Tooltip.BuildLines(counts)
 		local meta = Exo.API.GetCharacterInfo(charKey)
 		charRows[#charRows + 1] = {
 			name = (meta and meta.name ~= "" and meta.name) or charKey,
-			count = charEntry.bags + charEntry.bank + (charEntry.auctions or 0),
+			count = charTotal(charEntry),
 			entry = charEntry,
 		}
 	end

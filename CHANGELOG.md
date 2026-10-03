@@ -2,6 +2,18 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.12.0] - Item-Kern komplett (Post + Angelegt)
+### Neu (Kern-Auftrag: Item-Verwaltung ueber alle Twinks)
+- Post-Anhaenge zaehlen jetzt zum Bestand: Tooltip zeigt "Post 4",
+  die Suche hat den neuen Ort-Filter "Post" - nie wieder Items vergessen,
+  die tagelang im Briefkasten liegen.
+- Angelegte Ausruestung zaehlt zum Bestand: Tooltip "Angelegt 1",
+  Ort-Filter "Angelegt" - findet das alte Trinket am vergessenen Twink.
+- Neues Audit-Dokument docs/ITEM-KERN-AUDIT.md: Abdeckungsmatrix aller
+  Item-Quellen (was wird gesammelt, gezaehlt, wo sichtbar) + Garantien.
+### Intern
+- Item-Index invalidiert jetzt auch bei Mail-/Equipment-Aenderungen.
+
 ## [1.11.1] - Tooltip zeigt Bank-Reiter
 ### Neu (User-Wunsch)
 - Der Item-Tooltip nennt jetzt den konkreten Bank-Reiter:

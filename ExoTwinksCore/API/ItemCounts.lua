@@ -43,7 +43,7 @@ local function addToIndex(itemID, charKey, source, count, tab)
 	else
 		local charEntry = entry.chars[charKey]
 		if not charEntry then
-			charEntry = { bags = 0, bank = 0, auctions = 0 }
+			charEntry = { bags = 0, bank = 0, auctions = 0, mail = 0, equipped = 0 }
 			entry.chars[charKey] = charEntry
 		end
 		charEntry[source] = charEntry[source] + count
@@ -83,6 +83,22 @@ local function buildCache()
 				addToIndex(auction.itemID, charKey, "auctions", auction.qty or 1)
 			end
 		end
+		-- Post-Anhaenge (1.12.0): Items in der Mailbox gehoeren zum Bestand
+		local mails = char.mails and char.mails.list
+		for _, mail in ipairs(mails or {}) do
+			for _, item in ipairs(mail.items or {}) do
+				if item.id then
+					addToIndex(item.id, charKey, "mail", item.count or 1)
+				end
+			end
+		end
+		-- Angelegte Ausruestung (1.12.0): auch getragene Items sind Bestand
+		local slots = char.equipment and char.equipment.slots
+		for _, slotItem in pairs(slots or {}) do
+			if slotItem.id then
+				addToIndex(slotItem.id, charKey, "equipped", 1)
+			end
+		end
 	end
 	indexBagSet(Exo.Store:GetAccount().warbandBank, nil, "warband")
 	-- Gildenbanken (0.16.0): "charKey" ist hier der Gildenname
@@ -108,10 +124,12 @@ local function copyEntry(itemID, entry)
 		-- Versteckte Chars (1.11.0) aus Ergebnis UND Summe herausrechnen
 		if API.IsCharacterHidden and API.IsCharacterHidden(charKey) then
 			copy.total = copy.total - (charEntry.bags or 0) - (charEntry.bank or 0)
-				- (charEntry.auctions or 0)
+				- (charEntry.auctions or 0) - (charEntry.mail or 0)
+				- (charEntry.equipped or 0)
 		else
 			local charCopy = { bags = charEntry.bags, bank = charEntry.bank,
-				auctions = charEntry.auctions or 0 }
+				auctions = charEntry.auctions or 0, mail = charEntry.mail or 0,
+				equipped = charEntry.equipped or 0 }
 			if charEntry.bankTabs then
 				charCopy.bankTabs = {}
 				for tab, count in pairs(charEntry.bankTabs) do
@@ -159,7 +177,8 @@ local function invalidate()
 end
 
 Exo.EventBus:Register("EXO_CHAR_UPDATED", function(_, _, section)
-	if section == "bags" or section == "bank" or section == "auctions" then
+	if section == "bags" or section == "bank" or section == "auctions"
+		or section == "mails" or section == "equipment" then
 		invalidate()
 	end
 end, API)
