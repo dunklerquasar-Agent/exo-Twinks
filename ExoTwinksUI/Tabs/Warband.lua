@@ -32,10 +32,33 @@ end
 
 function BankTab:OnHeaderClick(colId) L.OnHeaderClick(self, colId) end
 
+-- "Einlagern"-Klick (1.13.0, von beiden Tabs genutzt):
+-- alles Kriegsmeutengebundene aus den Taschen in die KM-Bank
+local function onDepositClick(tab)
+	local moved, err = Exo.API.DepositWarboundToBank()
+	local text
+	if err == "bank_closed" then
+		text = "|cffff3333Einlagern geht nur bei geoeffneter Bank.|r"
+	elseif (moved or 0) == 0 then
+		text = "Keine kriegsmeutengebundenen Items in den Taschen."
+	else
+		text = string.format("|cff1eff00%d Stapel in die KM-Bank eingelagert.|r", moved)
+	end
+	if tab._footer then tab._footer:SetText(text) end
+end
+
+local function buildDepositButton(tab, content)
+	-- links neben dem "Symbole"-Button (TOPRIGHT -4, 90 breit)
+	tab._depositButton = Exo.UI.Widgets.Button(content,
+		"In KM-Bank einlagern", 150, 20, function() onDepositClick(tab) end)
+	tab._depositButton:SetPoint("TOPRIGHT", -102, 0)
+end
+
 function BankTab:Render(content)
 	if self._content ~= content then
 		self._content = content
 		L.Build(self, content, self.COLUMNS, "|cff1784d1Kriegsmeutenbank|r")
+		buildDepositButton(self, content)
 	end
 
 	local items = L.Sort(self.GatherItems(), self.sortBy, self.sortDesc)
@@ -64,6 +87,7 @@ end
 function BankTab._GetScroller() return BankTab._scroller end
 function BankTab._GetIconScroller() return BankTab._iconScroller end
 function BankTab._GetViewButton() return BankTab._viewButton end
+function BankTab._GetDepositButton() return BankTab._depositButton end
 function BankTab._GetFooter() return BankTab._footer end
 
 -- Reiter 2: KM-Items (kriegsmeutengebunden, je Charakter) -------------------------
@@ -123,6 +147,7 @@ function ItemsTab:Render(content)
 		L.Build(self, content, self.COLUMNS,
 			"|cff1784d1Kriegsmeutengebundene Items je Charakter|r"
 			.. "  |cff808080(nur verschiebbare -- bereits angelegte sind ausgeblendet)|r")
+		buildDepositButton(self, content)
 	end
 
 	local groups = self.GatherWarbound()
@@ -149,6 +174,7 @@ end
 function ItemsTab._GetScroller() return ItemsTab._scroller end
 function ItemsTab._GetIconScroller() return ItemsTab._iconScroller end
 function ItemsTab._GetViewButton() return ItemsTab._viewButton end
+function ItemsTab._GetDepositButton() return ItemsTab._depositButton end
 function ItemsTab._GetFooter() return ItemsTab._footer end
 
 Exo.UI:RegisterTab(BankTab)

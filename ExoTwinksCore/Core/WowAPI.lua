@@ -120,6 +120,13 @@ function W.GetContainerItem(bagID, slot)
 	end
 end
 
+-- Einlagern (1.13.0): legt einen Taschen-Slot in die Kriegsmeuten-Bank.
+-- Wirkt nur bei geoeffneter Bank (der Client ignoriert den Aufruf sonst).
+function W.DepositToWarbandBank(bagID, slot)
+	local bankType = Enum and Enum.BankType and Enum.BankType.Account
+	C_Container.UseContainerItem(bagID, slot, nil, bankType)
+end
+
 -- Waehrungen ---------------------------------------------------------------------
 
 function W.GetCurrencyCount()
