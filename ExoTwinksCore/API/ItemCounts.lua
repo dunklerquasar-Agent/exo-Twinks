@@ -15,7 +15,16 @@ local cache = nil -- itemID -> { total, warband, guilds = { [name] = n }, chars 
 
 -- Aufbau ---------------------------------------------------------------------------
 
-local function addToIndex(itemID, charKey, source, count)
+-- Bank-/KM-Bank-Reiter aus der Container-ID ableiten (1.11.1):
+-- Charbank-Tabs = Bag 6-11 -> Reiter 1-6; Kriegsmeuten-Tabs = Bag 12-16 -> Reiter 1-5
+local function tabIndexFor(source, bagID)
+	if type(bagID) ~= "number" then return nil end
+	if source == "bank" and bagID >= 6 and bagID <= 11 then return bagID - 5 end
+	if source == "warband" and bagID >= 12 and bagID <= 16 then return bagID - 11 end
+	return nil
+end
+
+local function addToIndex(itemID, charKey, source, count, tab)
 	local entry = cache[itemID]
 	if not entry then
 		entry = { total = 0, warband = 0, guilds = {}, chars = {} }
@@ -25,6 +34,10 @@ local function addToIndex(itemID, charKey, source, count)
 
 	if source == "warband" then
 		entry.warband = entry.warband + count
+		if tab then
+			entry.warbandTabs = entry.warbandTabs or {}
+			entry.warbandTabs[tab] = (entry.warbandTabs[tab] or 0) + count
+		end
 	elseif source == "guild" then
 		entry.guilds[charKey] = (entry.guilds[charKey] or 0) + count
 	else
@@ -34,16 +47,21 @@ local function addToIndex(itemID, charKey, source, count)
 			entry.chars[charKey] = charEntry
 		end
 		charEntry[source] = charEntry[source] + count
+		if source == "bank" and tab then
+			charEntry.bankTabs = charEntry.bankTabs or {}
+			charEntry.bankTabs[tab] = (charEntry.bankTabs[tab] or 0) + count
+		end
 	end
 end
 
 local function indexBagSet(bagSet, charKey, source)
 	if type(bagSet) ~= "table" then return end
-	for _, bag in pairs(bagSet) do
+	for bagID, bag in pairs(bagSet) do
 		if type(bag) == "table" and type(bag.items) == "table" then
+			local tab = tabIndexFor(source, bagID)
 			for _, item in pairs(bag.items) do
 				if item.id then
-					addToIndex(item.id, charKey, source, item.count or 1)
+					addToIndex(item.id, charKey, source, item.count or 1, tab)
 				end
 			end
 		end
@@ -82,14 +100,25 @@ end
 local function copyEntry(itemID, entry)
 	local copy = { itemID = itemID, total = entry.total, warband = entry.warband,
 		guilds = {}, chars = {} }
+	if entry.warbandTabs then
+		copy.warbandTabs = {}
+		for tab, count in pairs(entry.warbandTabs) do copy.warbandTabs[tab] = count end
+	end
 	for charKey, charEntry in pairs(entry.chars) do
 		-- Versteckte Chars (1.11.0) aus Ergebnis UND Summe herausrechnen
 		if API.IsCharacterHidden and API.IsCharacterHidden(charKey) then
 			copy.total = copy.total - (charEntry.bags or 0) - (charEntry.bank or 0)
 				- (charEntry.auctions or 0)
 		else
-			copy.chars[charKey] = { bags = charEntry.bags, bank = charEntry.bank,
+			local charCopy = { bags = charEntry.bags, bank = charEntry.bank,
 				auctions = charEntry.auctions or 0 }
+			if charEntry.bankTabs then
+				charCopy.bankTabs = {}
+				for tab, count in pairs(charEntry.bankTabs) do
+					charCopy.bankTabs[tab] = count
+				end
+			end
+			copy.chars[charKey] = charCopy
 		end
 	end
 	for guildName, count in pairs(entry.guilds or {}) do
