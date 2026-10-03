@@ -77,3 +77,11 @@ Gold-Summen, Bank-Alt-Gruppen, Questlog, Reputationen, Suchfilter |
 - [x] ✅ Charaktere ausblenden im Designer (1.11.0)
 - [x] ✅ Post-Indikator mit Ablauf-Warnung in der Matrix (1.11.0)
 - [ ] ⬜ !keys-Chat-Antwort, Export, PvP-Spalten (M1/M3/M4, danach)
+
+## 7. Item-Kern (Kernmechanik laut User, Okt 2026 - docs/ITEM-KERN-AUDIT.md)
+
+- [x] ✅ Post-Anhaenge im Item-Index: Tooltip "Post X" + Ort-Filter (1.12.0)
+- [x] ✅ Angelegte Items im Index: Tooltip "Angelegt X" + Ort-Filter (1.12.0)
+- [x] ✅ Bank-/KM-Reiter im Tooltip (1.11.1)
+- [ ] ⬜ "Kann ich das craften?" - Materialbedarf vs. Bestand (naechster Kern-Ausbau)
+- [ ] ⬜ AH-artige Suchfilter: Mindest-/Max-iLvl als Filter
