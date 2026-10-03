@@ -17,10 +17,29 @@ Exo.Services.Tooltip = Tooltip
 
 -- Zeilen-Komposition (rein, testbar) ------------------------------------------------
 
+-- Reiter-Zusatz (1.11.1): " (Reiter 2)" bei einem Reiter,
+-- " (Reiter 1: 3, Reiter 4: 2)" wenn das Item in mehreren Reitern liegt
+function Tooltip.TabSuffix(tabs)
+	if type(tabs) ~= "table" then return "" end
+	local ids = {}
+	for tab in pairs(tabs) do ids[#ids + 1] = tab end
+	if #ids == 0 then return "" end
+	table.sort(ids)
+	if #ids == 1 then return string.format(" (Reiter %d)", ids[1]) end
+	local parts = {}
+	for _, tab in ipairs(ids) do
+		parts[#parts + 1] = string.format("Reiter %d: %d", tab, tabs[tab])
+	end
+	return " (" .. table.concat(parts, ", ") .. ")"
+end
+
 local function sourceText(charEntry)
 	local parts = {}
 	if charEntry.bags > 0 then parts[#parts + 1] = "Taschen " .. charEntry.bags end
-	if charEntry.bank > 0 then parts[#parts + 1] = "Bank " .. charEntry.bank end
+	if charEntry.bank > 0 then
+		parts[#parts + 1] = "Bank " .. charEntry.bank
+			.. Tooltip.TabSuffix(charEntry.bankTabs)
+	end
 	if (charEntry.auctions or 0) > 0 then parts[#parts + 1] = "AH " .. charEntry.auctions end
 	return table.concat(parts, ", ")
 end
@@ -52,7 +71,8 @@ function Tooltip.BuildLines(counts)
 	end
 
 	if counts.warband > 0 then
-		lines[#lines + 1] = string.format("  Kriegsmeute: %d", counts.warband)
+		lines[#lines + 1] = string.format("  Kriegsmeute: %d%s",
+			counts.warband, Tooltip.TabSuffix(counts.warbandTabs))
 	end
 
 	-- Gildenbanken (0.16.0)
