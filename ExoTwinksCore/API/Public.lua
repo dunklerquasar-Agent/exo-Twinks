@@ -70,6 +70,28 @@ function API.GetCharacterSummary(charKey)
 	}
 end
 
+-- Alles Kriegsmeutengebundene aus den Taschen in die KM-Bank einlagern (1.13.0).
+-- Geht nur bei geoeffneter Bank. -> Anzahl eingelagerter Stapel | nil, "bank_closed"
+function API.DepositWarboundToBank()
+	local Containers = Exo.Collectors and Exo.Collectors.Containers
+	if not (Containers and Containers.IsBankOpen and Containers.IsBankOpen()) then
+		return nil, "bank_closed"
+	end
+	local W = Exo.WowAPI
+	local moved = 0
+	for bagID = 0, 5 do
+		for slot = 1, W.GetContainerNumSlots(bagID) do
+			local itemID = W.GetContainerItem(bagID, slot)
+			if itemID and (W.IsSlotWarbound(bagID, slot)
+				or W.IsPermanentWarbound(itemID)) then
+				W.DepositToWarbandBank(bagID, slot)
+				moved = moved + 1
+			end
+		end
+	end
+	return moved
+end
+
 -- Sortierte Liste aller Realms, auf denen Charaktere bekannt sind
 function API.GetRealms()
 	local seen, realms = {}, {}
