@@ -2,6 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.11.1] - Tooltip zeigt Bank-Reiter
+### Neu (User-Wunsch)
+- Der Item-Tooltip nennt jetzt den konkreten Bank-Reiter:
+  "Anna: 5 (Taschen 2, Bank 3 (Reiter 2))" statt nur "Bank 3".
+- Gleiches fuer die Kriegsmeuten-Bank: "Kriegsmeute: 12 (Reiter 1: 8, Reiter 3: 4)"
+  bei mehreren Reitern inkl. Einzelmengen.
+- Alte Bankdaten ohne Reiter-Info (Legacy-Container) bleiben unveraendert lesbar.
+
 ## [1.11.0] - Community-Wuensche II
 ### Neu
 - Charaktere ausblenden: Im Designer unter "Chars anzeigen" einzelne
