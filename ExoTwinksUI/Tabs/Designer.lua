@@ -254,6 +254,57 @@ function Tab.GetScaleLabel()
 end
 
 -- Charaktere ausblenden (1.11.0): sichtbar = Button ausgewaehlt
+-- Lager-Charaktere (1.14.0): Erweiterungs-/Berufs-Bank je Char.
+-- Der Tooltip zeigt dann fuer Altbestand "Lagerplatz: <Char>".
+Tab.STORAGE_EXPANSIONS = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } -- nur alte
+
+function Tab.CycleStorageExpansion(charKey)
+	local entry = Exo.API.GetStorageDesignation(charKey) or {}
+	local nextExp
+	if entry.expansion == nil then
+		nextExp = Tab.STORAGE_EXPANSIONS[1]
+	else
+		for index, step in ipairs(Tab.STORAGE_EXPANSIONS) do
+			if step == entry.expansion then
+				nextExp = Tab.STORAGE_EXPANSIONS[index + 1] -- nil = wieder aus
+				break
+			end
+		end
+	end
+	Exo.API.SetStorageDesignation(charKey, nextExp, entry.profession)
+	return nextExp
+end
+
+function Tab.CycleStorageProfession(charKey)
+	local entry = Exo.API.GetStorageDesignation(charKey) or {}
+	local profs = Exo.API.STORAGE_PROFESSIONS
+	local nextProf
+	if entry.profession == nil then
+		nextProf = profs[1]
+	else
+		for index, name in ipairs(profs) do
+			if name == entry.profession then
+				nextProf = profs[index + 1] -- nil nach letztem = wieder aus
+				break
+			end
+		end
+	end
+	Exo.API.SetStorageDesignation(charKey, entry.expansion, nextProf)
+	return nextProf
+end
+
+-- Button-Beschriftungen (rein, testbar)
+function Tab.StorageExpLabel(charKey)
+	local entry = Exo.API.GetStorageDesignation(charKey)
+	local exp = entry and entry.expansion
+	return "Erweiterung: " .. ((exp ~= nil and Exo.API.EXPANSION_SHORT[exp]) or "-")
+end
+
+function Tab.StorageProfLabel(charKey)
+	local entry = Exo.API.GetStorageDesignation(charKey)
+	return "Beruf: " .. ((entry and entry.profession) or "-")
+end
+
 function Tab.ToggleCharHidden(charKey)
 	Exo.API.SetCharacterHidden(charKey, not Exo.API.IsCharacterHidden(charKey))
 end
@@ -578,6 +629,20 @@ local function buildUI(self, content)
 	end
 	if #hideChunk > 0 then row(hideLabel, hideChunk, 88) end
 
+	-- Lager-Charaktere (1.14.0): Tooltip-Hinweis "Lagerplatz" fuer Altbestand
+	for _, charKey in ipairs(Exo.API.GetCharacterKeys()) do
+		local info = Exo.API.GetCharacterInfo(charKey)
+		local shortName = (info and info.name ~= "" and info.name) or charKey
+		row("Lager: " .. shortName, {
+			{ group = "storageExp", key = charKey, width = 130,
+				label = Tab.StorageExpLabel(charKey),
+				onClick = function() Tab.CycleStorageExpansion(charKey) end },
+			{ group = "storageProf", key = charKey, width = 170,
+				label = Tab.StorageProfLabel(charKey),
+				onClick = function() Tab.CycleStorageProfession(charKey) end },
+		})
+	end
+
 	-- Fusszeile: Zuruecksetzen + Hinweis
 	local reset = Widgets.Button(content, "Alles zuruecksetzen", 160, 20, function()
 		Tab.ResetAll()
@@ -679,6 +744,18 @@ function Tab:RefreshStates()
 	-- Chars anzeigen/ausblenden (1.11.0): ausgewaehlt = sichtbar
 	for charKey, btn in pairs(self._buttons.hideChar or {}) do
 		btn:SetSelected(not API.IsCharacterHidden(charKey))
+	end
+
+	-- Lager-Charaktere (1.14.0): Beschriftung zeigt die aktuelle Markierung
+	for charKey, btn in pairs(self._buttons.storageExp or {}) do
+		local entry = API.GetStorageDesignation(charKey)
+		btn:SetText(Tab.StorageExpLabel(charKey))
+		btn:SetSelected((entry and entry.expansion ~= nil) or false)
+	end
+	for charKey, btn in pairs(self._buttons.storageProf or {}) do
+		local entry = API.GetStorageDesignation(charKey)
+		btn:SetText(Tab.StorageProfLabel(charKey))
+		btn:SetSelected((entry and entry.profession ~= nil) or false)
 	end
 end
 

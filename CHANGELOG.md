@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.14.0] - Lagerplatz-Tooltip ("Could be stored on")
+### Neu (inspiriert von Altoholic)
+- Lager-Charaktere: Im Designer-Tab kann jeder Char als Erweiterungs-
+  und/oder Berufs-Bank markiert werden (z. B. "Cata-Bergbau").
+- Der Item-Tooltip zeigt fuer Altbestand frueherer Erweiterungen eine
+  neue Zeile "Lagerplatz: <Char>" - also auf welchem Twink das Item
+  eingelagert gehoert.
+- Regeln: nur Items ALTER Erweiterungen; Berufs-Banken (Handelswaren-
+  Subklasse -> Beruf) haben Vorrang vor reinen Erweiterungs-Banken;
+  versteckte Chars werden uebersprungen; Hinweis nur bei Items im Besitz.
+
 ## [1.13.0] - "In KM-Bank einlagern"-Button
 ### Neu (User-Wunsch)
 - Neuer Button "In KM-Bank einlagern" in den Reitern KM-Bank und KM-Items:
