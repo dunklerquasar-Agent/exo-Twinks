@@ -85,3 +85,8 @@ Gold-Summen, Bank-Alt-Gruppen, Questlog, Reputationen, Suchfilter |
 - [x] ✅ Bank-/KM-Reiter im Tooltip (1.11.1)
 - [ ] ⬜ "Kann ich das craften?" - Materialbedarf vs. Bestand (naechster Kern-Ausbau)
 - [ ] ⬜ AH-artige Suchfilter: Mindest-/Max-iLvl als Filter
+
+### Lagerplatz-Tooltip (erledigt 1.14.0)
+- "Could be stored on"-Konzept von Altoholic uebernommen: Lager-Chars im
+  Designer markieren (Erweiterung/Beruf), Tooltip zeigt "Lagerplatz: <Char>"
+  fuer Altbestand frueherer Erweiterungen.
