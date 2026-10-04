@@ -99,6 +99,16 @@ function Tooltip.BuildLines(counts)
 	return lines
 end
 
+-- "Lagerplatz"-Hinweis (1.14.0): auf welchem Lager-Char gehoert Altbestand
+-- eingelagert? (Siehe API.FindStorageChar; Markierung im Designer-Tab.)
+function Tooltip.StorageLine(itemID)
+	local charKey, label = Exo.API.FindStorageChar(itemID)
+	if not charKey then return nil end
+	local meta = Exo.API.GetCharacterInfo(charKey)
+	local name = (meta and meta.name ~= "" and meta.name) or charKey
+	return string.format("  |cffffd100Lagerplatz:|r %s (%s)", name, label)
+end
+
 -- Tooltip-Hook ------------------------------------------------------------------------
 
 local function onItemTooltip(tooltip, data)
@@ -111,6 +121,10 @@ local function onItemTooltip(tooltip, data)
 	for _, line in ipairs(Tooltip.BuildLines(counts)) do
 		tooltip:AddLine(line)
 	end
+
+	-- Nur fuer Items im Besitz (wie Altoholic seit 11.0.006)
+	local storageLine = Tooltip.StorageLine(data.id)
+	if storageLine then tooltip:AddLine(storageLine) end
 end
 
 Exo.WowAPI.AddItemTooltipPostCall(onItemTooltip)

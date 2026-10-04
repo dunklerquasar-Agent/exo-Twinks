@@ -25,6 +25,99 @@ function API.SetCharacterHidden(charKey, isHidden)
 	API.SetOption("hiddenChars", hidden)
 end
 
+-- Lager-Charaktere (1.14.0): Option "storageChars" =
+-- { [charKey] = { expansion = n?, profession = s? } }. Der Tooltip zeigt
+-- fuer Items ALTER Erweiterungen, auf welchem Char sie gelagert gehoeren
+-- ("Lagerplatz") -- angelehnt an Altoholics "Could be stored on".
+
+API.STORAGE_PROFESSIONS = { "Bergbau", "Kraeuterkunde", "Schneiderei",
+	"Lederverarbeitung", "Verzauberkunst", "Juwelenschleifen",
+	"Ingenieurskunst", "Inschriftenkunde", "Kochkunst" }
+
+API.EXPANSION_SHORT = { [0] = "Classic", [1] = "BC", [2] = "WotLK",
+	[3] = "Cata", [4] = "MoP", [5] = "WoD", [6] = "Legion", [7] = "BfA",
+	[8] = "SL", [9] = "DF", [10] = "TWW", [11] = "Midnight" }
+
+-- Handelswaren-Subklasse (Enum.ItemClass.Tradegoods = 7) -> zustaendiger Beruf
+local SUBCLASS_TO_PROF = {
+	[1] = "Ingenieurskunst",   -- Teile
+	[4] = "Juwelenschleifen",  -- Juwelenschleifen
+	[5] = "Schneiderei",       -- Stoff
+	[6] = "Lederverarbeitung", -- Leder
+	[7] = "Bergbau",           -- Metall & Stein
+	[8] = "Kochkunst",         -- Kochkunst
+	[9] = "Kraeuterkunde",     -- Kraeuter
+	[12] = "Verzauberkunst",   -- Verzauberkunst
+	[16] = "Inschriftenkunde", -- Inschriftenkunde
+}
+
+function API.GetStorageDesignation(charKey)
+	local storage = API.GetOption("storageChars")
+	return type(storage) == "table" and storage[charKey] or nil
+end
+
+-- expansion und profession beide nil -> Markierung entfernen
+function API.SetStorageDesignation(charKey, expansion, profession)
+	local storage = API.GetOption("storageChars")
+	if type(storage) ~= "table" then storage = {} end
+	if expansion == nil and profession == nil then
+		storage[charKey] = nil
+	else
+		storage[charKey] = { expansion = expansion, profession = profession }
+	end
+	API.SetOption("storageChars", storage)
+end
+
+-- Beschriftung einer Markierung: "Cata-Bergbau", "MoP" oder "Bergbau"
+function API.StorageLabel(entry)
+	if not entry then return nil end
+	local exp = entry.expansion and API.EXPANSION_SHORT[entry.expansion]
+	if exp and entry.profession then return exp .. "-" .. entry.profession end
+	return exp or entry.profession
+end
+
+-- Findet den Lager-Charakter fuer ein Item. Regeln (wie Altoholic):
+-- nur Items FRUEHERER Erweiterungen; Berufs-Banken haben Vorrang vor
+-- reinen Erweiterungs-Banken; versteckte Chars werden uebersprungen.
+-- Rueckgabe: charKey, label | nil
+function API.FindStorageChar(itemID)
+	local W = Exo.WowAPI
+	local exp = W.GetItemExpansion(itemID)
+	if exp == nil or exp >= W.GetCurrentExpansion() then return nil end
+	local storage = API.GetOption("storageChars")
+	if type(storage) ~= "table" then return nil end
+
+	local tradegoods = (_G.Enum and _G.Enum.ItemClass
+		and _G.Enum.ItemClass.Tradegoods) or 7
+	local classID, _, subclassID = W.GetItemClass(itemID)
+	local prof = classID == tradegoods and SUBCLASS_TO_PROF[subclassID] or nil
+
+	local keys = {}
+	for charKey in pairs(storage) do
+		if not API.IsCharacterHidden(charKey) then keys[#keys + 1] = charKey end
+	end
+	table.sort(keys)
+
+	-- 1. Durchgang: Berufs-Bank (Erweiterung muss passen, falls gesetzt)
+	if prof then
+		for _, charKey in ipairs(keys) do
+			local entry = storage[charKey]
+			if entry.profession == prof
+				and (entry.expansion == nil or entry.expansion == exp) then
+				return charKey, API.StorageLabel(entry)
+			end
+		end
+	end
+	-- 2. Durchgang: Erweiterungs-Bank
+	for _, charKey in ipairs(keys) do
+		local entry = storage[charKey]
+		if entry.expansion == exp then
+			return charKey, API.StorageLabel(entry)
+		end
+	end
+	return nil
+end
+
 -- Ohne Argument: nur sichtbare Chars; includeHidden=true liefert alle (Designer)
 function API.GetCharacterKeys(includeHidden)
 	if not Exo.Store:IsReady() then return {} end
