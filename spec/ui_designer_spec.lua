@@ -173,6 +173,25 @@ describe("Designer (0.11.0)", function()
 				Exo.UI.OverviewTab.GetOrder())
 		end)
 
+		it("Inhalt liegt im Scrollbereich; Mausrad scrollt begrenzt (1.17.1)", function()
+			local content = CreateFrame("Frame")
+			Tab:Render(content)
+			assert.is_table(Tab._scroll)
+			assert.is_true((Tab._designerHeight or 0) > 0)
+
+			-- Klemm-Logik deterministisch pruefen: Inhalt 1000px,
+			-- Sichthoehe im Mock = Fallback 400 -> Range 600
+			Tab._designerHeight = 1000
+			local wheel = Tab._scroll:GetScript("OnMouseWheel")
+			assert.is_function(wheel)
+			wheel(Tab._scroll, -1) -- runter
+			assert.is_true(Tab._scrollPos > 0)
+			for _ = 1, 200 do wheel(Tab._scroll, -1) end
+			assert.equal(600, Tab._scrollPos)   -- unten begrenzt
+			for _ = 1, 500 do wheel(Tab._scroll, 1) end
+			assert.equal(0, Tab._scrollPos)     -- oben begrenzt
+		end)
+
 		it("Modul-Buttons existieren fuer alle Uebersicht-Module", function()
 			local content = CreateFrame("Frame")
 			Tab:Render(content)

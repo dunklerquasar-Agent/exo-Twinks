@@ -3,7 +3,7 @@
 ## Notes: exo-Twinks - Benutzeroberflaeche (LoadOnDemand)
 ## Author: exo-Twinks Contributors
 ## X-License: GPL-3.0
-## Version: 1.17.0
+## Version: 1.17.1
 ## Group: exo-Twinks
 ## X-Website: https://www.curseforge.com/wow/addons/exo-twinks
 ## Category: Other

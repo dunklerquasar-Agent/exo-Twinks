@@ -2,6 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.17.1] - 2026-10-07
+
+### Behoben
+- Designer: Bei vielen Twinks lief der Inhalt unten aus dem Fenster
+  (Lager-Zeilen ragten ueber den Rand, "Alles zuruecksetzen" ueberlappte).
+  Der Designer-Inhalt liegt jetzt in einem Scrollbereich (Mausrad), die
+  Fusszeile mit "Alles zuruecksetzen" bleibt fest unten.
+
 ## [1.17.0] - 2026-10-07
 
 ### Hinzugefuegt

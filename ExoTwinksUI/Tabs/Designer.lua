@@ -375,8 +375,31 @@ end
 local ROW_STEP = 21      -- vertikaler Abstand zwischen Zeilen (15 Zeilen-Budget)
 local LABEL_W = 150      -- Breite der Beschriftungs-Spalte links
 
-local function buildUI(self, content)
+local function buildUI(self, outer)
 	local Widgets = Exo.UI.Widgets
+
+	-- Scrollbarer Bereich (1.17.1): Bei vielen Twinks (Chars anzeigen +
+	-- Lager-Zeilen) lief der Inhalt unten aus dem Fenster. Der Inhalt liegt
+	-- jetzt in einem ScrollFrame (Mausrad), die Fusszeile bleibt fix.
+	local scroll = Exo.WowAPI.CreateFrame("ScrollFrame", nil, outer)
+	scroll:SetPoint("TOPLEFT", 0, 0)
+	scroll:SetPoint("BOTTOMRIGHT", 0, 26)
+	local content = Exo.WowAPI.CreateFrame("Frame", nil, scroll)
+	content:SetSize(920, 10)
+	scroll:SetScrollChild(content)
+	scroll:EnableMouseWheel(true)
+	scroll:SetScript("OnMouseWheel", function(frame, delta)
+		local view = frame:GetHeight()
+		if not view or view == 0 then view = 400 end
+		local range = math.max(0, (self._designerHeight or 0) - view)
+		local pos = (self._scrollPos or 0) - (delta or 0) * 40
+		if pos < 0 then pos = 0 elseif pos > range then pos = range end
+		self._scrollPos = pos
+		frame:SetVerticalScroll(pos)
+	end)
+	self._scroll = scroll
+	self._scrollPos = 0
+
 	local y = -4
 	self._buttons = {}   -- [gruppe][key] = Button (fuer RefreshStates)
 
@@ -643,8 +666,12 @@ local function buildUI(self, content)
 		})
 	end
 
-	-- Fusszeile: Zuruecksetzen + Hinweis
-	local reset = Widgets.Button(content, "Alles zuruecksetzen", 160, 20, function()
+	-- Gesamthoehe des Scroll-Inhalts (fuer die Mausrad-Begrenzung)
+	self._designerHeight = -y + 10
+	content:SetHeight(self._designerHeight)
+
+	-- Fusszeile: Zuruecksetzen + Hinweis (fix unter dem Scrollbereich)
+	local reset = Widgets.Button(outer, "Alles zuruecksetzen", 160, 20, function()
 		Tab.ResetAll()
 		self:RefreshStates()
 		Exo.UI:RefreshActiveTab()
@@ -652,7 +679,7 @@ local function buildUI(self, content)
 	reset:SetPoint("BOTTOMLEFT", 4, 2)
 	self._resetButton = reset
 
-	local hint = Widgets.Label(content,
+	local hint = Widgets.Label(outer,
 		"Alle Einstellungen wirken sofort und gelten accountweit.", "GameFontDisableSmall")
 	hint:SetPoint("BOTTOMLEFT", 174, 6)
 end
