@@ -30,9 +30,13 @@ describe("Currencies-Collector", function()
 		mock.AdvanceTime(1)
 
 		local currencies = currentChar().currencies
-		assert.same({ name = "Valorsteine", qty = 750, max = 2000 }, currencies[3008])
-		assert.same({ name = "Flugsteine", qty = 12345, max = 0 }, currencies[2245])
-		assert.same({ name = "Kriegsressourcen", qty = 400, max = 0 }, currencies[1166])
+		-- seit 1.17.0 kommen cat/catOrder (Kategorie + Spiel-Reihenfolge) dazu
+		assert.same({ name = "Valorsteine", qty = 750, max = 2000,
+			cat = "Saison der Entdeckungen", catOrder = 1 }, currencies[3008])
+		assert.same({ name = "Flugsteine", qty = 12345, max = 0,
+			cat = "Saison der Entdeckungen", catOrder = 1 }, currencies[2245])
+		assert.same({ name = "Kriegsressourcen", qty = 400, max = 0,
+			cat = "Legacy", catOrder = 2 }, currencies[1166])
 
 		local count = 0
 		for _ in pairs(currencies) do count = count + 1 end
