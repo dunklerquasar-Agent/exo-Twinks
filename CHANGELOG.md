@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.15.0] - Demo-Modus fuer Screenshots
+### Neu
+- /exo demo an|aus: Demo-Modus mit 8 ERFUNDENEN Beispiel-Charakteren
+  (Realm "Sturmklinge", volle Daten: Gold, M+, Vault, Raids, Berufe,
+  Post, Taschen/Bank) fuer Screenshots und Praesentationen.
+- Beim Einschalten werden alle echten Charaktere ausgeblendet (auch im
+  Tooltip); der vorherige Sichtbarkeits-Zustand wird gesichert und beim
+  Ausschalten exakt wiederhergestellt. Echte Daten werden NIE veraendert.
+- /exo help um den demo-Befehl ergaenzt.
+
 ## [1.14.0] - Lagerplatz-Tooltip ("Could be stored on")
 ### Neu (inspiriert von Altoholic)
 - Lager-Charaktere: Im Designer-Tab kann jeder Char als Erweiterungs-
