@@ -239,7 +239,8 @@ function API.GetCurrencies(charKey)
 	local char = Exo.Store:GetCharacter(charKey)
 	local copy = {}
 	for id, c in pairs((char and char.currencies) or {}) do
-		copy[id] = { name = c.name, qty = c.qty, max = c.max, acc = c.acc }
+		copy[id] = { name = c.name, qty = c.qty, max = c.max, acc = c.acc,
+			cat = c.cat, catOrder = c.catOrder }
 	end
 	return copy
 end

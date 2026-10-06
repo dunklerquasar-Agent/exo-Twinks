@@ -143,7 +143,12 @@ local function buildCurrencyRows()
 		local currencies = Exo.API.GetCurrencies(s.key)
 		local ids = {}
 		for id in pairs(currencies) do ids[#ids + 1] = id end
+		-- 1.17.0: aktuelle Erweiterung zuerst (Spiel-Reihenfolge der
+		-- Kategorien), innerhalb der Kategorie alphabetisch
 		table.sort(ids, function(a, b)
+			local oa = currencies[a].catOrder or 9999
+			local ob = currencies[b].catOrder or 9999
+			if oa ~= ob then return oa < ob end
 			return (currencies[a].name or "") < (currencies[b].name or "")
 		end)
 		local parts = {}

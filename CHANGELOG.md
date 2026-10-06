@@ -2,6 +2,27 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.17.0] - 2026-10-07
+
+### Hinzugefuegt
+- Waehrungen nach Erweiterung gruppiert: Die Charakter-Matrix zeigt alle
+  Waehrungen jetzt in auf-/zuklappbaren Gruppen je Kategorie -- in der
+  Spiel-Reihenfolge (Midnight zuoberst, darunter The War Within usw.).
+  Standardmaessig ist nur die oberste Gruppe offen; Klick auf die
+  Gruppenzeile klappt sie auf/zu, der Zustand wird gespeichert.
+- Der Scan merkt sich je Waehrung die Kategorie (cat) und deren Position
+  in der Spielliste (catOrder); `Exo.API.GetCurrencies` liefert beides.
+- Uebersicht-Modul "Waehrungen": sortiert jetzt nach Erweiterung
+  (aktuelle zuerst), innerhalb der Kategorie alphabetisch.
+- GitHub: Jedes Release traegt zusaetzlich ein ZIP mit festem Namen
+  `exo-Twinks.zip` -- der Link "Neueste Version" im README zeigt damit
+  immer auf das aktuellste Release.
+
+### Geaendert
+- Die Matrix zeigt nicht mehr nur max. 8 Waehrungen mit Cap, sondern
+  alle -- uebersichtlich dank der Gruppen. `Data.TrackedCurrencies`
+  steuert die Matrix nicht mehr (API bleibt erhalten).
+
 ## [1.16.0] - Waehrungen komplett
 ### Verbessert
 - Der Waehrungs-Scan erfasst jetzt SAEMTLICHE Waehrungen des Charakters:

@@ -273,7 +273,7 @@ describe("ExoTwinksUI / Charaktere-Tab (AlterEgo-Matrix)", function()
 			assert.equal("-", Tab.FormatCurrencyCell(currencies, 999))
 		end)
 
-		it("BuildMatrix: Weeklies-Zeile + Waehrungs-Sektion (Automatik: nur mit Cap)", function()
+		it("BuildMatrix: Weeklies-Zeile + gruppierte Waehrungs-Sektion", function()
 			Exo.Data = {
 				WeeklyQuests = quests,
 				TrackedCurrencies = {},
@@ -282,30 +282,35 @@ describe("ExoTwinksUI / Charaktere-Tab (AlterEgo-Matrix)", function()
 			local char = Exo.Store:GetCharacter("Default.Testrealm.Liquidora")
 			char.currencies = {
 				[3008] = { name = "Runenwappen", qty = 320, max = 480 },
-				[2245] = { name = "Flugsteine", qty = 12530 }, -- kein Cap -> Automatik ignoriert
+				[2245] = { name = "Flugsteine", qty = 12530 }, -- ohne Cap, 1.17.0: trotzdem gelistet
 			}
 			char.weeklies = { [90001] = true }
 
 			local matrix = Tab.BuildMatrix()
-			local byKind, sections = {}, {}
+			local byKind, sections, currencyRows = {}, {}, {}
 			for _, row in ipairs(matrix.rows) do
 				byKind[row.kind] = byKind[row.kind] or row
 				if row.kind == "section" then sections[#sections + 1] = row.label end
+				if row.kind == "currency" then currencyRows[#currencyRows + 1] = row end
 			end
 
 			assert.is_table(byKind.weeklies)
 			assert.same({ "Waehrungen" }, sections)
-			assert.equal("Runenwappen", byKind.currency.label)
-			assert.equal(3008, byKind.currency.currencyID)
+			-- ohne Kategorie-Info landen beide in der offenen Gruppe "Sonstige"
+			assert.equal("[-] Sonstige", byKind.currencygroup.label)
+			assert.equal(2, #currencyRows)
+			assert.equal("Flugsteine", currencyRows[1].label) -- alphabetisch
+			assert.equal("Runenwappen", currencyRows[2].label)
 
 			local c = matrix.chars[1]
 			assert.equal("|cffffd7001/2|r", Tab.CellText(byKind.weeklies, c))
-			assert.equal("|cffffffff320/480|r", Tab.CellText(byKind.currency, c))
+			assert.equal("|cffffffff320/480|r", Tab.CellText(currencyRows[2], c))
+			assert.equal("", Tab.CellText(byKind.currencygroup, c)) -- Gruppenzeile ohne Zellen
 			Exo.Data = nil
 		end)
 
-		it("gepflegte TrackedCurrencies-Liste hat Vorrang und Reihenfolge", function()
-			Exo.Data = { WeeklyQuests = {}, TrackedCurrencies = { 2245, 3008 } }
+		it("alle Waehrungen erscheinen gruppiert; TrackedCurrencies steuert nicht mehr", function()
+			Exo.Data = { WeeklyQuests = {}, TrackedCurrencies = { 2245 } }
 			seedChar("Default.Testrealm.Liquidora", { ilvl = 400 })
 			local char = Exo.Store:GetCharacter("Default.Testrealm.Liquidora")
 			char.currencies = {
@@ -317,7 +322,7 @@ describe("ExoTwinksUI / Charaktere-Tab (AlterEgo-Matrix)", function()
 			for _, row in ipairs(Tab.BuildMatrix().rows) do
 				if row.kind == "currency" then ids[#ids + 1] = row.currencyID end
 			end
-			assert.same({ 2245, 3008 }, ids)
+			assert.same({ 2245, 3008 }, ids) -- alphabetisch, beide vorhanden
 			Exo.Data = nil
 		end)
 	end)

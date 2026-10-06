@@ -146,6 +146,12 @@ function W.GetCurrencyEntry(index)
 	return currencyID, info.name or "", info.quantity or 0, info.maxQuantity or 0, acc
 end
 
+-- Liefert den Namen, wenn die Zeile ein Kategorie-Header ist (sonst nil)
+function W.GetCurrencyHeader(index)
+	local info = C_CurrencyInfo.GetCurrencyListInfo(index)
+	if info and info.isHeader then return info.name or "" end
+end
+
 -- Oeffnet ALLE zugeklappten Waehrungs-Kategorien (auch "Nicht verwendet"),
 -- damit der Scan wirklich jede besessene Waehrung sieht. Die Liste waechst
 -- beim Aufklappen -- deshalb waehrend des Laufs die Groesse neu lesen.

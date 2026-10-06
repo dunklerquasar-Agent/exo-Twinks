@@ -1,8 +1,18 @@
-# exo-Twinks 1.16.0
+# exo-Twinks 1.17.0
 
 Der Account-Manager fuer World of Warcraft (Retail/Midnight): vereint die
 Kernfunktionen von **Altoholic**, **AlterEgo** und **SavedInstances** in
 einem Addon mit einheitlicher, frei konfigurierbarer Oberflaeche.
+
+## Download & Installation
+
+**[Neueste Version als ZIP herunterladen](https://github.com/dunklerquasar-Agent/exo-Twinks/releases/latest/download/exo-Twinks.zip)**
+(Link zeigt immer auf das aktuellste Release.)
+
+1. ZIP entpacken.
+2. Die drei Ordner `ExoTwinksCore`, `ExoTwinksData`, `ExoTwinksUI` nach
+   `World of Warcraft/_retail_/Interface/AddOns/` kopieren.
+3. Spiel neu starten oder `/reload` -- oeffnen mit `/exo`.
 
 ## Module
 
@@ -74,7 +84,7 @@ geschlossen ist (Schema ist versioniert und migriert selbststaendig).
 
 ## Entwicklung
 
-- Tests: `busted spec` (491 Tests), Statik: `luacheck ExoTwinksCore
+- Tests: `busted spec` (495 Tests), Statik: `luacheck ExoTwinksCore
   ExoTwinksUI ExoTwinksData spec`
 - Architektur: ein Global `Exo`; UI liest ausschliesslich `Exo.API`;
   interne Events `EXO_*` via `Exo.EventBus` (auch fuer Dritt-Addons).

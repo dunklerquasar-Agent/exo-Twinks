@@ -154,6 +154,21 @@ function Tab.BuildWeekliesTooltip(weeklies, quests)
 	return lines
 end
 
+-- Waehrungs-Gruppen (1.17.0): Klapp-Zustand je Erweiterung, persistent in den
+-- Optionen (currencyGroupsOpen). Default: nur die oberste Gruppe ist offen.
+function Tab.IsCurrencyGroupOpen(cat, default)
+	local open = Exo.API.GetOption("currencyGroupsOpen")
+	if type(open) == "table" and open[cat] ~= nil then return open[cat] end
+	return default == true
+end
+
+function Tab.ToggleCurrencyGroup(item)
+	local open = Exo.API.GetOption("currencyGroupsOpen")
+	if type(open) ~= "table" then open = {} end
+	open[item.cat] = not item.open
+	Exo.API.SetOption("currencyGroupsOpen", open)
+end
+
 -- Waehrung: "320/480" mit Cap-Ampel (rot = voll, gelb = ab 75%), ohne Cap nur Menge
 function Tab.FormatCurrencyCell(currencies, currencyID)
 	local c = currencies and currencies[currencyID]
@@ -206,7 +221,7 @@ function Tab.BuildMatrix()
 	local chars, dungeonNames = {}, {}
 	local raids, raidOrder = {}, {}
 
-	local currencyNames, autoCurrencies = {}, {}
+	local currencyNames, currencyCats, currencyCatOrder = {}, {}, {}
 
 	for _, charKey in ipairs(Exo.API.GetCharacterKeys()) do
 		local summary = Exo.API.GetCharacterSummary(charKey)
@@ -227,7 +242,13 @@ function Tab.BuildMatrix()
 			}
 			for id, c in pairs(currencies) do
 				currencyNames[id] = c.name or ("Waehrung " .. id)
-				if (c.max or 0) > 0 then autoCurrencies[id] = true end
+				if c.cat then
+					currencyCats[id] = currencyCats[id] or c.cat
+					local order = c.catOrder or 9999
+					if not currencyCatOrder[id] or order < currencyCatOrder[id] then
+						currencyCatOrder[id] = order
+					end
+				end
 			end
 			for mapID, dungeon in pairs(mplus.dungeons) do
 				dungeonNames[mapID] = dungeon.name
@@ -303,20 +324,43 @@ function Tab.BuildMatrix()
 		rows[#rows + 1] = { kind = "weeklies", label = "Weeklies", quests = weeklyQuests }
 	end
 
-	-- Waehrungs-Sektion: gepflegte Saisonliste, sonst Automatik (alle mit Cap)
-	local currencyIDs = Exo.API.GetTrackedCurrencies()
-	if #currencyIDs == 0 then
-		for id in pairs(autoCurrencies) do currencyIDs[#currencyIDs + 1] = id end
-		table.sort(currencyIDs, function(a, b)
-			return (currencyNames[a] or "") < (currencyNames[b] or "")
+	-- Waehrungs-Sektion (1.17.0): alle Waehrungen, nach Erweiterung gruppiert.
+	-- Reihenfolge = Spiel-Reihenfolge der Kategorien (Midnight zuoberst, dann
+	-- The War Within usw.); jede Gruppe ist per Klick einzeln auf-/zuklappbar,
+	-- standardmaessig ist nur die oberste (aktuelle Erweiterung) offen.
+	if rowOn("currencies") and next(currencyNames) then
+		local groups, groupOrder = {}, {}
+		for id in pairs(currencyNames) do
+			local cat = currencyCats[id] or "Sonstige"
+			local g = groups[cat]
+			if not g then
+				g = { cat = cat, order = currencyCatOrder[id] or 9999, ids = {} }
+				groups[cat] = g
+				groupOrder[#groupOrder + 1] = g
+			else
+				g.order = math.min(g.order, currencyCatOrder[id] or 9999)
+			end
+			g.ids[#g.ids + 1] = id
+		end
+		table.sort(groupOrder, function(a, b)
+			if a.order ~= b.order then return a.order < b.order end
+			return a.cat < b.cat
 		end)
-		while #currencyIDs > 8 do table.remove(currencyIDs) end
-	end
-	if rowOn("currencies") and #currencyIDs > 0 then
 		rows[#rows + 1] = { kind = "section", label = "Waehrungen" }
-		for _, id in ipairs(currencyIDs) do
-			rows[#rows + 1] = { kind = "currency",
-				label = currencyNames[id] or ("Waehrung " .. id), currencyID = id }
+		for gi, g in ipairs(groupOrder) do
+			local open = Tab.IsCurrencyGroupOpen(g.cat, gi == 1)
+			rows[#rows + 1] = { kind = "currencygroup", cat = g.cat, open = open,
+				label = (open and "[-] " or "[+] ") .. g.cat }
+			if open then
+				table.sort(g.ids, function(a, b)
+					return (currencyNames[a] or "") < (currencyNames[b] or "")
+				end)
+				for _, id in ipairs(g.ids) do
+					rows[#rows + 1] = { kind = "currency",
+						label = currencyNames[id] or ("Waehrung " .. id),
+						currencyID = id }
+				end
+			end
 		end
 	end
 
@@ -545,6 +589,21 @@ local function buildUI(self, content)
 			row.nameCell:SetPoint("LEFT", NAME_X, 0)
 			row.nameCell:SetWidth(NAME_W)
 			row.nameCell:SetWordWrap(false)
+
+			-- Klick-Zone auf der Beschriftungs-Spalte: Waehrungs-Gruppen
+			-- auf-/zuklappen (1.17.0)
+			local nameClick = Exo.WowAPI.CreateFrame("Frame", nil, row)
+			nameClick:SetPoint("LEFT", NAME_X - 2, 0)
+			nameClick:SetSize(NAME_W + 4, ROW_HEIGHT)
+			nameClick:EnableMouse(true)
+			nameClick:SetScript("OnMouseDown", function()
+				local item = row._item
+				if item and item.kind == "currencygroup" then
+					Tab.ToggleCurrencyGroup(item)
+					if Exo.UI.RefreshActiveTab then Exo.UI:RefreshActiveTab() end
+				end
+			end)
+			row._nameClick = nameClick
 			row.cells = {}
 			row.colbg = {}
 			row.squares = {}
@@ -599,8 +658,14 @@ local function buildUI(self, content)
 						Exo.UI.Format.Duration(item.resetAt - Exo.WowAPI.Now()))
 				end
 				row.nameCell:SetText(label)
+			elseif item.kind == "currencygroup" then
+				row.bg:SetColorTexture(1, 1, 1, 0.05)
+				row.nameCell:SetText("  |cff69ccf0" .. item.label .. "|r")
+			elseif item.kind == "currency" then
+				row.bg:SetColorTexture(1, 1, 1, (absoluteIndex % 2 == 0) and 0.03 or 0)
+				row.nameCell:SetText("      " .. item.label)
 			elseif item.kind == "dungeon" or item.kind == "bossrow"
-				or item.kind == "vault" or item.kind == "currency" then
+				or item.kind == "vault" then
 				row.bg:SetColorTexture(1, 1, 1, (absoluteIndex % 2 == 0) and 0.03 or 0)
 				row.nameCell:SetText("  " .. item.label)
 			else

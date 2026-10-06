@@ -23,12 +23,21 @@ function Collector.Scan()
 
 	-- Komplett-Scan (1.16.0): zugeklappte Kategorien (inkl. "Nicht verwendet")
 	-- voruebergehend oeffnen, sonst fehlen deren Waehrungen in der Liste.
+	-- Seit 1.17.0 wird zusaetzlich die Kategorie (cat) + ihre Position in der
+	-- Spiel-Reihenfolge (catOrder, Midnight = 1) je Waehrung gespeichert.
 	local reCollapse = W.ExpandAllCurrencyHeaders()
+	local cat, catOrder = nil, 0
 	for index = 1, W.GetCurrencyCount() do
-		local currencyID, name, qty, max, acc = W.GetCurrencyEntry(index)
-		if currencyID then
-			currencies[currencyID] = { name = name, qty = qty, max = max,
-				acc = acc or nil }
+		local headerName = W.GetCurrencyHeader(index)
+		if headerName then
+			cat, catOrder = headerName, catOrder + 1
+		else
+			local currencyID, name, qty, max, acc = W.GetCurrencyEntry(index)
+			if currencyID then
+				currencies[currencyID] = { name = name, qty = qty, max = max,
+					acc = acc or nil, cat = cat,
+					catOrder = cat and catOrder or nil }
+			end
 		end
 	end
 	W.CollapseCurrencyHeaders(reCollapse)
