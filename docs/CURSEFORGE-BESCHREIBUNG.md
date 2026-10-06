@@ -127,3 +127,70 @@ auf Deutsch.
 - Release Type: anfangs **Beta**
 - Projekt-Icon: `docs/curseforge-icon.png` (400×400)
 ```
+
+---
+
+## Entschieden (06.10.2026)
+
+- **Lizenz: All Rights Reserved** (wie Altoholic und AlterEgo).
+- **Upload-Automatik: JA** -- der Agent laedt kuenftig bei jedem Release das
+  Curse-ZIP automatisch hoch, sobald Projekt-ID + API-Token vorliegen.
+
+## Noch offen (User-Schritte)
+
+1. Projekt auf https://console.curseforge.com anlegen (Name, Summary,
+   Kategorien, Icon, Beschreibung -- alles aus dieser Datei).
+2. Nach Freigabe: **Projekt-ID** durchgeben (Projektseite, "About Project").
+3. **API-Token** erzeugen (https://authors.curseforge.com/account/api-tokens)
+   und in die Regelwerk-Datei in den Uploads legen (NICHT in den Chat).
+
+Danach (Agent): Upload von v1.14.0+ via
+`POST https://wow.curseforge.com/api/projects/<ID>/upload-file`
+(Header `X-Api-Token`; Metadaten: gameVersions=12.1.0, releaseType=release,
+changelog aus CHANGELOG.md; Datei = exo-Twinks-<version>-curse.zip).
+
+---
+
+## Transparenz-Block (ans ENDE der Projektbeschreibung anhaengen, EN)
+
+```markdown
+## Transparency
+
+exo-Twinks is developed **AI-assisted** (code written with AI tooling, reviewed
+and quality-gated by 481 automated tests + static analysis on every release).
+The **project icon is AI-generated**. All screenshots show the real in-game UI
+with no AI modification.
+```
+
+> Hintergrund: CurseForge verlangt einen sichtbaren Hinweis nur fuer
+> AI-Showcase-Bilder, die den Inhalt falsch darstellen koennten (Moderation
+> Policies, "AI Misleading Content Disclosure"). r/wowaddons verlangt bei
+> Release-Posts einen AI-Disclaimer (Regel 1). Der Block oben deckt beides ab.
+> WICHTIG: Screenshots immer echt aus dem Spiel -- NIE AI-generiert.
+
+---
+
+## Screenshot-Plan (User macht die Aufnahmen im Spiel)
+
+> **Privatsphaere geloest (1.15.0):** Vor den Aufnahmen `/exo demo an`
+> eingeben -- das Addon zeigt dann 8 erfundene Beispiel-Chars statt der
+> echten. Danach `/exo demo aus`. Screenshots bleiben damit 100% echte
+> In-Game-Aufnahmen ohne persoenliche Daten.
+
+Aufnahme: Druck-Taste (Screenshot landet in
+`World of Warcraft/_retail_/Screenshots/`); vorher mit `/exo` das Fenster
+oeffnen. Am besten 16:9, UI-Skalierung Standard, aussagekraeftige Daten
+(mehrere Chars eingeloggt gewesen).
+
+| # | Motiv | Was sichtbar sein soll |
+|---|-------|------------------------|
+| 1 | Charaktere-Tab (Matrix) | Mehrere Chars: Gold, iLvl, M+-Rating, Great Vault, Post-Indikator |
+| 2 | Item-Suche | Suchbegriff + Treffer ueber mehrere Chars/Orte (Taschen, Bank, KM-Bank) |
+| 3 | Item-Tooltip | Hover ueber ein Item mit "exo-Twinks: N insgesamt" + Char-Zeilen (DAS Killer-Feature) |
+| 4 | Inventar-Tab | Symbolansicht mit Gruppierung (z. B. nach Typ) |
+| 5 | KM-Bank-Tab | Inhalt + Button "In KM-Bank einlagern" |
+| 6 | Uebersicht/Vault | Wochen-Fortschritt, Lockouts (SavedInstances-Ersatz zeigen) |
+
+Reihenfolge beim Hochladen = Reihenfolge in der Galerie; Screenshot 3
+(Tooltip) oder 1 (Matrix) als erstes Bild waehlen, das ist das Aushaengeschild.
+Keine Bearbeitung noetig; zuschneiden auf das Fenster ist ok (kein AI-Upscaling).

@@ -199,6 +199,30 @@ subcommands.keys = function()
 	Exo.WowAPI.AnnounceChat("Schluesselsteine: " .. table.concat(parts, ", "))
 end
 
+-- /exo demo an|aus: Beispiel-Charaktere fuer Screenshots (1.15.0)
+subcommands.demo = function(arg)
+	local Demo = Exo.DemoMode
+	if arg == "an" or arg == "on" then
+		local ok, err = Demo.Enable()
+		if ok then
+			Log.emit("|cff69ccf0exo-Twinks|r Demo-Modus AN: 8 Beispiel-Chars aktiv,"
+				.. " echte Chars ausgeblendet. Beenden mit /exo demo aus")
+		elseif err == "already_on" then
+			Log.emit("|cff69ccf0exo-Twinks|r Demo-Modus laeuft bereits.")
+		end
+	elseif arg == "aus" or arg == "off" then
+		local ok, err = Demo.Disable()
+		if ok then
+			Log.emit("|cff69ccf0exo-Twinks|r Demo-Modus AUS: echte Chars wiederhergestellt.")
+		elseif err == "already_off" then
+			Log.emit("|cff69ccf0exo-Twinks|r Demo-Modus ist nicht aktiv.")
+		end
+	else
+		Log.emit(string.format("|cff69ccf0exo-Twinks|r Demo-Modus ist %s - /exo demo an|aus",
+			Demo.IsActive() and "AN" or "AUS"))
+	end
+end
+
 subcommands.debug = function(arg)
 	if arg == "off" then
 		Log:SetVerbose(false)
@@ -257,6 +281,7 @@ subcommands.help = function()
 	Log.emit("  /exo mail      - bald ablaufende Mails")
 	Log.emit("  /exo tax       - Gildensteuer-Bericht | tax rate <0-25>")
 	Log.emit("  /exo ah        - eigene Auktionen aller Twinks")
+	Log.emit("  /exo demo      - Beispiel-Chars fuer Screenshots: an | aus")
 	Log.emit("  /exo debug     - Debug-Modus an | off | dump")
 	Log.emit("  /exo help      - diese Hilfe")
 end
