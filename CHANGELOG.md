@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.16.0] - Waehrungen komplett
+### Verbessert
+- Der Waehrungs-Scan erfasst jetzt SAEMTLICHE Waehrungen des Charakters:
+  Zugeklappte Kategorien im Waehrungsfenster (z. B. alte Erweiterungen)
+  und die Kategorie "Nicht verwendet" werden fuer den Scan kurz geoeffnet
+  und danach exakt wieder zugeklappt - vorher fehlten diese Waehrungen.
+- Account-weite Waehrungen werden als solche erkannt und gespeichert
+  (acc-Flag, z. B. Handelsvorrat/Trader's Tender).
+
 ## [1.15.0] - Demo-Modus fuer Screenshots
 ### Neu
 - /exo demo an|aus: Demo-Modus mit 8 ERFUNDENEN Beispiel-Charakteren

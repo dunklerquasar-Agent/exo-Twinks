@@ -361,18 +361,40 @@ function mock.Reset()
 
 	-- Waehrungen: state.currencies = Array von { id, name, qty, max } oder { header = "..." }
 	state.currencies = {}
+	-- Waehrungsliste mit Kategorie-Headern; Header koennen zugeklappt sein
+	-- ({ header = "X", collapsed = true }) -- dann sind ihre Eintraege bis zum
+	-- naechsten Header unsichtbar (wie im echten Waehrungsfenster).
+	local function visibleCurrencies()
+		local rows, hidden = {}, false
+		for _, c in ipairs(state.currencies) do
+			if c.header then
+				hidden = c.collapsed and true or false
+				rows[#rows + 1] = c
+			elseif not hidden then
+				rows[#rows + 1] = c
+			end
+		end
+		return rows
+	end
 	_G.C_CurrencyInfo = {
-		GetCurrencyListSize = function() return #state.currencies end,
+		GetCurrencyListSize = function() return #visibleCurrencies() end,
 		GetCurrencyListInfo = function(i)
-			local c = state.currencies[i]
+			local c = visibleCurrencies()[i]
 			if not c then return end
 			if c.header then
-				return { name = c.header, isHeader = true }
+				return { name = c.header, isHeader = true,
+					isHeaderExpanded = not c.collapsed }
 			end
-			return { name = c.name, isHeader = false, quantity = c.qty, maxQuantity = c.max }
+			return { name = c.name, isHeader = false, quantity = c.qty,
+				maxQuantity = c.max, isAccountWide = c.acc or false,
+				isAccountTransferable = c.accTransfer or false }
+		end,
+		ExpandCurrencyList = function(i, expand)
+			local c = visibleCurrencies()[i]
+			if c and c.header then c.collapsed = not expand end
 		end,
 		GetCurrencyListLink = function(i)
-			local c = state.currencies[i]
+			local c = visibleCurrencies()[i]
 			return (c and c.id) and ("currency:" .. c.id) or nil
 		end,
 		GetCurrencyIDFromLink = function(link)
