@@ -80,3 +80,11 @@ geschlossen ist (Schema ist versioniert und migriert selbststaendig).
   interne Events `EXO_*` via `Exo.EventBus` (auch fuer Dritt-Addons).
 - Roadmap nach 1.0: Dungeon-Teleports (Secure Buttons), Auktionen,
   Import/Export von Designer-Profilen. Siehe `docs/PLAN-REDESIGN-1.0.md`.
+
+## Lizenz & Quellcode
+
+exo-Twinks ist Open Source unter der **GNU General Public License v3.0**
+(siehe LICENSE): Jeder darf das Addon nutzen, veraendern und weitergeben --
+Aenderungen muessen unter derselben Lizenz offengelegt werden.
+
+Quellcode, Issues und Releases: https://github.com/dunklerquasar-Agent/exo-Twinks

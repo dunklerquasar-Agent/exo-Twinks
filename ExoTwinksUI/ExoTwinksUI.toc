@@ -2,6 +2,7 @@
 ## Title: exo-Twinks UI
 ## Notes: exo-Twinks - Benutzeroberflaeche (LoadOnDemand)
 ## Author: exo-Twinks Contributors
+## X-License: GPL-3.0
 ## Version: 1.15.0
 ## Group: exo-Twinks
 ## X-Website: https://www.curseforge.com/wow/addons/exo-twinks

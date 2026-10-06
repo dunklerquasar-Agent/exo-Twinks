@@ -132,7 +132,11 @@ auf Deutsch.
 
 ## Entschieden (06.10.2026)
 
-- **Lizenz: All Rights Reserved** (wie Altoholic und AlterEgo).
+- **Lizenz: GNU GPL v3** (geaendert 06.10.2026, vorher ARR geplant):
+  Open Source -- jeder darf nutzen/aendern, muss Aenderungen aber offenlegen.
+  Auf CurseForge beim Anlegen/Bearbeiten "GNU General Public License version 3 (GPLv3)" waehlen.
+- **GitHub-Repo ist PUBLIC** -- der Link gehoert in jeden Veroeffentlichungstext:
+  https://github.com/dunklerquasar-Agent/exo-Twinks
 - **Upload-Automatik: JA** -- der Agent laedt kuenftig bei jedem Release das
   Curse-ZIP automatisch hoch, sobald Projekt-ID + API-Token vorliegen.
 
@@ -154,6 +158,12 @@ changelog aus CHANGELOG.md; Datei = exo-Twinks-<version>-curse.zip).
 ## Transparenz-Block (ans ENDE der Projektbeschreibung anhaengen, EN)
 
 ```markdown
+## Open Source
+
+exo-Twinks is **open source under GPLv3** -- use it, learn from it, fork it
+(derivatives must stay open source). Source code, issue tracker and releases:
+**https://github.com/dunklerquasar-Agent/exo-Twinks**
+
 ## Transparency
 
 exo-Twinks is developed **AI-assisted** (code written with AI tooling, reviewed
