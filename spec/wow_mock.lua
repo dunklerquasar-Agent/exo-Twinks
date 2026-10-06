@@ -528,11 +528,6 @@ end
 function mock.LoadExoCore(root)
 	root = root or "ExoTwinksCore"
 
--- Einlagern-Protokoll (1.13.0): alle UseContainerItem-Aufrufe
-function mock.GetUsedContainerItems()
-	return state.usedContainerItems or {}
-end
-
 return mock.LoadAddon({
 		root .. "/Core/Log.lua",
 		root .. "/Core/WowAPI.lua",
@@ -562,6 +557,7 @@ return mock.LoadAddon({
 		root .. "/Services/Minimap.lua",
 		root .. "/Services/Tooltip.lua",
 		root .. "/Services/Compat.lua",
+		root .. "/Services/DemoMode.lua",
 		root .. "/Core/Init.lua",
 	})
 end
@@ -570,11 +566,6 @@ end
 function mock.LoadExoData(root)
 	root = root or "ExoTwinksData"
 
--- Einlagern-Protokoll (1.13.0): alle UseContainerItem-Aufrufe
-function mock.GetUsedContainerItems()
-	return state.usedContainerItems or {}
-end
-
 return mock.LoadAddon({ root .. "/Season.lua" }, "ExoTwinksData")
 end
 
@@ -582,11 +573,6 @@ end
 -- WICHTIG: ExoTwinksUI greift ueber das globale Exo zu (eigener Vararg-Namespace in-game).
 function mock.LoadExoUI(root)
 	root = root or "ExoTwinksUI"
-
--- Einlagern-Protokoll (1.13.0): alle UseContainerItem-Aufrufe
-function mock.GetUsedContainerItems()
-	return state.usedContainerItems or {}
-end
 
 return mock.LoadAddon({
 		root .. "/Framework/Format.lua",
@@ -832,6 +818,7 @@ end
 function mock.Now()
 	return state.now
 end
+
 
 
 -- Einlagern-Protokoll (1.13.0): alle UseContainerItem-Aufrufe
