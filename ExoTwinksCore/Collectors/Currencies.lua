@@ -21,12 +21,17 @@ function Collector.Scan()
 	local W = Exo.WowAPI
 	local currencies = {}
 
+	-- Komplett-Scan (1.16.0): zugeklappte Kategorien (inkl. "Nicht verwendet")
+	-- voruebergehend oeffnen, sonst fehlen deren Waehrungen in der Liste.
+	local reCollapse = W.ExpandAllCurrencyHeaders()
 	for index = 1, W.GetCurrencyCount() do
-		local currencyID, name, qty, max = W.GetCurrencyEntry(index)
+		local currencyID, name, qty, max, acc = W.GetCurrencyEntry(index)
 		if currencyID then
-			currencies[currencyID] = { name = name, qty = qty, max = max }
+			currencies[currencyID] = { name = name, qty = qty, max = max,
+				acc = acc or nil }
 		end
 	end
+	W.CollapseCurrencyHeaders(reCollapse)
 
 	Store:WriteCharacterData(Store:GetCurrentKey(), "currencies", currencies)
 end

@@ -133,7 +133,7 @@ function W.GetCurrencyCount()
 	return C_CurrencyInfo.GetCurrencyListSize() or 0
 end
 
--- Liefert (currencyID, name, qty, max) oder nil fuer Header/unbekannte Eintraege
+-- Liefert (currencyID, name, qty, max, accountWide) oder nil fuer Header
 function W.GetCurrencyEntry(index)
 	local info = C_CurrencyInfo.GetCurrencyListInfo(index)
 	if not info or info.isHeader then return end
@@ -142,7 +142,40 @@ function W.GetCurrencyEntry(index)
 	local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
 	if not currencyID then return end
 
-	return currencyID, info.name or "", info.quantity or 0, info.maxQuantity or 0
+	local acc = (info.isAccountWide or info.isAccountTransferable) and true or false
+	return currencyID, info.name or "", info.quantity or 0, info.maxQuantity or 0, acc
+end
+
+-- Oeffnet ALLE zugeklappten Waehrungs-Kategorien (auch "Nicht verwendet"),
+-- damit der Scan wirklich jede besessene Waehrung sieht. Die Liste waechst
+-- beim Aufklappen -- deshalb waehrend des Laufs die Groesse neu lesen.
+-- Rueckgabe: Namen der vorher zugeklappten Header (fuer die Wiederherstellung).
+function W.ExpandAllCurrencyHeaders()
+	local expanded = {}
+	local index = 1
+	while index <= (C_CurrencyInfo.GetCurrencyListSize() or 0) do
+		local info = C_CurrencyInfo.GetCurrencyListInfo(index)
+		if info and info.isHeader and not info.isHeaderExpanded then
+			C_CurrencyInfo.ExpandCurrencyList(index, true)
+			expanded[#expanded + 1] = info.name
+		end
+		index = index + 1
+	end
+	return expanded
+end
+
+-- Klappt die vorher zugeklappten Header wieder zu (rueckwaerts, damit die
+-- Indizes beim Zuklappen stabil bleiben) -- der Spieler merkt nichts.
+function W.CollapseCurrencyHeaders(names)
+	if not names or #names == 0 then return end
+	local wanted = {}
+	for _, n in ipairs(names) do wanted[n] = true end
+	for index = (C_CurrencyInfo.GetCurrencyListSize() or 0), 1, -1 do
+		local info = C_CurrencyInfo.GetCurrencyListInfo(index)
+		if info and info.isHeader and wanted[info.name] then
+			C_CurrencyInfo.ExpandCurrencyList(index, false)
+		end
+	end
 end
 
 -- Ausruestung ---------------------------------------------------------------------
