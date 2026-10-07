@@ -2,6 +2,20 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.20.0] - 2026-10-07
+
+### Hinzugefuegt
+- /exo help ist jetzt die zentrale Kurzreferenz: alle Kommandos nach
+  Gruppen (Fenster / Berichte / Werkzeuge) plus Bedien-Tipps (Kopfzeilen-
+  Klicks, Waehrungs-Gruppen, Shift-Klick-Verlinkung, Designer). Ein Spec
+  stellt sicher, dass jedes registrierte Kommando gelistet ist.
+
+### Geaendert
+- Leerzustaende Bank/KM ausgebaut: Der Bank-Hinweis nennt jetzt konkret
+  den gewaehlten Charakter ("Mit Anna einmal die Bank oeffnen."); ohne
+  Charaktere fuehrt er zum ersten Login. KM-Bank und KM-Items sind per
+  Spec abgesichert.
+
 ## [1.19.1] - 2026-10-07
 
 ### Behoben

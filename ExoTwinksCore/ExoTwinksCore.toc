@@ -3,7 +3,7 @@
 ## Notes: exo-Twinks - Twink-Verwaltung: Uebersicht, Items, Raids, Mythic+ (Core)
 ## Author: exo-Twinks Contributors
 ## X-License: GPL-3.0
-## Version: 1.19.1
+## Version: 1.20.0
 ## Group: ExoTwinksCore
 ## X-Website: https://www.curseforge.com/wow/addons/exo-twinks
 ## Category: Other

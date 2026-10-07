@@ -1,4 +1,4 @@
-# exo-Twinks 1.19.1
+# exo-Twinks 1.20.0
 
 Der Account-Manager fuer World of Warcraft (Retail/Midnight): verwaltet
 Charaktere, Inventar, Berufe, Mythic+, Raids und Wochenfortschritt mit
@@ -85,7 +85,7 @@ geschlossen ist (Schema ist versioniert und migriert selbststaendig).
 
 ## Entwicklung
 
-- Tests: `busted spec` (501 Tests), Statik: `luacheck ExoTwinksCore
+- Tests: `busted spec` (506 Tests), Statik: `luacheck ExoTwinksCore
   ExoTwinksUI ExoTwinksData spec`
 - Architektur: ein Global `Exo`; UI liest ausschliesslich `Exo.API`;
   interne Events `EXO_*` via `Exo.EventBus` (auch fuer Dritt-Addons).
