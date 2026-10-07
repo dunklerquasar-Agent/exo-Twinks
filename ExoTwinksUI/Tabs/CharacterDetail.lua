@@ -213,7 +213,9 @@ function Detail.BuildDetailRows(charKey, compareKey)
 	local locksA, locksB = lockMap(A.locks), B and lockMap(B.locks) or nil
 	local lockNames = unionKeys(locksA, locksB)
 	if #lockNames == 0 then
-		rows[#rows + 1] = { label = "Keine aktiven IDs", a = "", b = B and "" }
+		-- Einheitlicher Leerzustand-Text (1.19.0)
+		rows[#rows + 1] = { label = Exo.UI.EmptyState.Text("Noch keine aktiven Raid-IDs"),
+			a = "", b = B and "" }
 	end
 	for _, name in ipairs(lockNames) do
 		rows[#rows + 1] = { label = name, a = locksA[name] or "-",
@@ -234,7 +236,9 @@ function Detail.BuildDetailRows(charKey, compareKey)
 	end
 	local questIDs = unionKeys(questsA, questsB)
 	if #questIDs == 0 then
-		rows[#rows + 1] = { label = "Keine aktiven Quests", a = "", b = B and "" }
+		-- Einheitlicher Leerzustand-Text (1.19.0)
+		rows[#rows + 1] = { label = Exo.UI.EmptyState.Text("Noch keine aktiven Quests"),
+			a = "", b = B and "" }
 	end
 	for _, questID in ipairs(questIDs) do
 		rows[#rows + 1] = {
@@ -248,7 +252,9 @@ function Detail.BuildDetailRows(charKey, compareKey)
 	local curA, curB = currencyMap(A.currencies), B and currencyMap(B.currencies) or nil
 	local curNames = unionKeys(curA, curB)
 	if #curNames == 0 then
-		rows[#rows + 1] = { label = "Keine Daten", a = "", b = B and "" }
+		-- Einheitlicher Leerzustand-Text (1.19.0)
+		rows[#rows + 1] = { label = Exo.UI.EmptyState.Text("Noch keine Waehrungen"),
+			a = "", b = B and "" }
 	end
 	for _, name in ipairs(curNames) do
 		rows[#rows + 1] = { label = name, a = curA[name] or "-",

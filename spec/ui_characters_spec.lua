@@ -341,11 +341,14 @@ describe("ExoTwinksUI / Charaktere-Tab (AlterEgo-Matrix)", function()
 			assert.truthy(footer:find("5 g", 1, true))
 		end)
 
-		it("ohne Chars: Hinweis statt Matrix", function()
+		it("ohne Chars: Leerzustand statt Matrix (1.19.0)", function()
 			local content = CreateFrame("Frame")
 			Tab:Render(content)
 			assert.equal(0, #Tab._GetScroller():GetData())
-			assert.truthy(Tab._GetFooter():GetText():find("Noch keine Charakterdaten", 1, true))
+			local es = content._emptyState
+			assert.is_true(es.host:IsShown())
+			assert.truthy(es.title:GetText():find("Noch keine Charakterdaten", 1, true))
+			assert.truthy(es.hint:GetText():find("einloggen", 1, true))
 		end)
 
 		it("blaettert ab 7 Charakteren", function()

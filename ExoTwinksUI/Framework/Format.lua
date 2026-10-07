@@ -80,7 +80,7 @@ end
 function Format.TimeAgo(lastSeen, now)
 	lastSeen = tonumber(lastSeen) or 0
 	if lastSeen <= 0 then return "-" end
-	-- 1.18.1: fehlt `now`, gilt die aktuelle Zeit. Vorher wurde nil zu 0 und
+	-- 1.19.1: fehlt `now`, gilt die aktuelle Zeit. Vorher wurde nil zu 0 und
 	-- JEDER Zeitstempel zu "1 Minute" (Uebersicht/Vergleich zeigten bei allen
 	-- Chars "1 Minute").
 	now = tonumber(now) or (Exo.WowAPI and Exo.WowAPI.Now()) or 0
