@@ -232,18 +232,29 @@ subcommands.debug = function(arg)
 	end
 end
 
+-- /exo help (1.20.0): zentrale Kurzreferenz -- alle Kommandos + Bedien-Tipps.
+-- Ein Spec prueft, dass JEDES registrierte Subcommand hier gelistet ist.
 subcommands.help = function()
-	Log.emit("|cff69ccf0exo-Twinks|r Kommandos:")
-	Log.emit("  /exo           - UI oeffnen/schliessen (auch /twinks, /alto)")
-	Log.emit("  /exo version  - Version anzeigen")
-	Log.emit("  /exo keys      - Schluesselsteine aller Twinks ansagen")
-	Log.emit("  /exo vault     - offene Schatzkammer-Belohnungen")
-	Log.emit("  /exo mail      - bald ablaufende Mails")
-	Log.emit("  /exo tax       - Gildensteuer-Bericht | tax rate <0-25>")
-	Log.emit("  /exo ah        - eigene Auktionen aller Twinks")
-	Log.emit("  /exo demo      - Beispiel-Chars fuer Screenshots: an | aus")
-	Log.emit("  /exo debug     - Debug-Modus an | off | dump")
-	Log.emit("  /exo help      - diese Hilfe")
+	Log.emit(string.format("|cff69ccf0exo-Twinks|r v%s - Kurzreferenz:", Exo.version))
+	Log.emit("|cffffd700Fenster|r")
+	Log.emit("  /exo             - UI oeffnen/schliessen (auch /twinks, /alto, /altong)")
+	Log.emit("                     alternativ: Minimap-Button oder Tastenkuerzel (AddOns)")
+	Log.emit("|cffffd700Berichte|r")
+	Log.emit("  /exo keys        - Schluesselsteine aller Twinks ansagen")
+	Log.emit("  /exo vault       - offene Schatzkammer-Belohnungen")
+	Log.emit("  /exo mail        - bald ablaufende Mails aller Twinks")
+	Log.emit("  /exo ah          - eigene Auktionen aller Twinks")
+	Log.emit("  /exo tax         - Gildensteuer-Bericht | /exo tax rate <0-25>")
+	Log.emit("|cffffd700Werkzeuge|r")
+	Log.emit("  /exo demo an|aus - Beispiel-Chars fuer Screenshots (echte bleiben erhalten)")
+	Log.emit("  /exo debug       - Debug-Modus an | off | dump")
+	Log.emit("  /exo version     - installierte Version anzeigen")
+	Log.emit("  /exo help        - diese Kurzreferenz")
+	Log.emit("|cffffd700Tipps|r")
+	Log.emit("  - Uebersicht-Kopfzeilen: Klick = auf/zu, Shift = nach vorn, Alt = nach hinten")
+	Log.emit("  - Charaktere: Waehrungs-Gruppen per Klick auf [+]/[-] auf-/zuklappen")
+	Log.emit("  - Items: Shift-Klick verlinkt in den Chat; Tooltip zeigt Bestaende aller Twinks")
+	Log.emit("  - Aussehen, Reiter, Steuersaetze, Lager-Chars: Reiter 'Designer'")
 end
 
 local function onSlashCommand(msg)
@@ -276,3 +287,4 @@ _G.BINDING_NAME_EXO_TOGGLE = "exo-Twinks-Fenster ein-/ausblenden"
 Exo._internal = Exo._internal or {}
 Exo._internal.onSlashCommand = onSlashCommand
 Exo._internal.toggleUI = toggleUI
+Exo._internal.subcommands = subcommands -- fuer den Help-Vollstaendigkeits-Spec

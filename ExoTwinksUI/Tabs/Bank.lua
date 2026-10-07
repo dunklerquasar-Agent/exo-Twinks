@@ -183,6 +183,15 @@ function Tab:Render(content)
 	local target = self:GetSelectedTarget()
 	self._targetButton:SetText(target and target.label or "-")
 
+	-- Kontextabhaengiger Leerzustand (1.20.0): mit gewaehltem Charakter wird
+	-- der Tipp konkret; ganz ohne Charaktere fuehrt er zum ersten Login
+	if target then
+		self.emptyHint = "Mit " .. (target.name or target.label)
+			.. " einmal die Bank oeffnen."
+	else
+		self.emptyHint = "Mit einem Charakter einloggen und dessen Bank oeffnen."
+	end
+
 	local items = target
 		and L.Sort(L.Enrich(Exo.API.GetCharacterBankItems(target.key)),
 			self.sortBy, self.sortDesc)
