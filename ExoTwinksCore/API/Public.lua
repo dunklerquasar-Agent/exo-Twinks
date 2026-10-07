@@ -28,7 +28,7 @@ end
 -- Lager-Charaktere (1.14.0): Option "storageChars" =
 -- { [charKey] = { expansion = n?, profession = s? } }. Der Tooltip zeigt
 -- fuer Items ALTER Erweiterungen, auf welchem Char sie gelagert gehoeren
--- ("Lagerplatz") -- zeigt, auf welchen Charakteren ein Item liegt.
+-- ("Lagerplatz") -- angelehnt an Altoholics "Could be stored on".
 
 API.STORAGE_PROFESSIONS = { "Bergbau", "Kraeuterkunde", "Schneiderei",
 	"Lederverarbeitung", "Verzauberkunst", "Juwelenschleifen",
@@ -76,7 +76,7 @@ function API.StorageLabel(entry)
 	return exp or entry.profession
 end
 
--- Findet den Lager-Charakter fuer ein Item nach konsistenten Regeln:
+-- Findet den Lager-Charakter fuer ein Item. Regeln (wie Altoholic):
 -- nur Items FRUEHERER Erweiterungen; Berufs-Banken haben Vorrang vor
 -- reinen Erweiterungs-Banken; versteckte Chars werden uebersprungen.
 -- Rueckgabe: charKey, label | nil

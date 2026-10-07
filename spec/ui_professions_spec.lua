@@ -24,14 +24,9 @@ describe("ExoTwinksUI / Berufe-Tab", function()
 	end)
 
 	describe("BuildRows (Uebersicht)", function()
-		it("leere Zeilen ohne Berufsdaten; Leerzustand im Render (1.19.0)", function()
-			assert.same({}, Tab.BuildRows(""))
-			local content = CreateFrame("Frame")
-			Tab:Render(content)
-			local es = content._emptyState
-			assert.is_true(es.host:IsShown())
-			assert.truthy(es.title:GetText():find("Noch keine Berufsdaten", 1, true))
-			assert.truthy(es.hint:GetText():find("Berufsfensters erfasst", 1, true))
+		it("Hinweis, wenn noch keine Berufsdaten existieren", function()
+			local rows = Tab.BuildRows("")
+			assert.matches("keine Berufsdaten", rows[1].text)
 		end)
 
 		it("pro Char eine Kopfzeile + eine Zeile je Beruf", function()
@@ -68,14 +63,9 @@ describe("ExoTwinksUI / Berufe-Tab", function()
 			assert.matches("Anna", rows[1].text)
 		end)
 
-		it("keine Treffer -> Leerzustand im Render (1.19.0)", function()
-			assert.same({}, Tab.BuildRows("fasnacht"))
-			local content = CreateFrame("Frame")
-			Tab.query = "fasnacht"
-			Tab:Render(content)
-			local es = content._emptyState
-			assert.is_true(es.host:IsShown())
-			assert.truthy(es.title:GetText():find("Keine Rezepte gefunden", 1, true))
+		it("keine Treffer -> Hinweiszeile", function()
+			local rows = Tab.BuildRows("fasnacht")
+			assert.matches("Keine Rezepte gefunden", rows[1].text)
 		end)
 	end)
 

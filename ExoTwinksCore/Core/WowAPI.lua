@@ -68,7 +68,7 @@ function W.Now()
 	return time()
 end
 
--- Lesender Zugriff auf WoW-Globals (z. B. fuer Kompatibilitaetspruefungen).
+-- Lesender Zugriff auf fremde Globals (nur fuer LegacyImport!)
 function W.GetGlobal(name)
 	return _G[name]
 end

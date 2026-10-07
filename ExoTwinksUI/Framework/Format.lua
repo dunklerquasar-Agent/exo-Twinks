@@ -80,7 +80,11 @@ end
 function Format.TimeAgo(lastSeen, now)
 	lastSeen = tonumber(lastSeen) or 0
 	if lastSeen <= 0 then return "-" end
-	local diff = math.max(0, (tonumber(now) or 0) - lastSeen)
+	-- 1.18.1: fehlt `now`, gilt die aktuelle Zeit. Vorher wurde nil zu 0 und
+	-- JEDER Zeitstempel zu "1 Minute" (Uebersicht/Vergleich zeigten bei allen
+	-- Chars "1 Minute").
+	now = tonumber(now) or (Exo.WowAPI and Exo.WowAPI.Now()) or 0
+	local diff = math.max(0, now - lastSeen)
 	if diff < 3600 then
 		return Format.Count(math.max(1, math.floor(diff / 60)), "Minute", "Minuten")
 	elseif diff < 86400 then

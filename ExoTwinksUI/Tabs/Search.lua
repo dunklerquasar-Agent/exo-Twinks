@@ -287,9 +287,6 @@ local function buildUI(self, content)
 	local W = Exo.WowAPI
 	local Widgets = Exo.UI.Widgets
 
-	-- Einheitlicher Leerzustand (1.19.0) -- Flaeche der Ergebnis-Liste
-	Exo.UI.EmptyState.Attach(content, { top = 72, bottom = 20 })
-
 	-- Suchfeld
 	local label = Widgets.Label(content, "Suche:", "GameFontNormal")
 	label:SetPoint("TOPLEFT", 4, -4)
@@ -420,17 +417,9 @@ function Tab:Render(content)
 	self._scroller:SetData(shown)
 
 	local trimmed = self.query:gsub("^%s+", ""):gsub("%s+$", "")
-	local ES = Exo.UI.EmptyState
 	if trimmed == "" or (#trimmed < MIN_QUERY_LEN and not tonumber(trimmed)) then
-		-- Eingabe-Zustand (kein Leerzustand) -- Liste bleibt leer
-		ES.Hide(content)
 		self._footer:SetText("Mindestens " .. MIN_QUERY_LEN .. " Zeichen eingeben (oder eine Item-ID).")
-	elseif #results == 0 then
-		-- Einheitlicher Leerzustand (1.19.0)
-		ES.Show(content, "Keine Treffer.", "Suchbegriff oder Filter anpassen.")
-		self._footer:SetText("")
 	else
-		ES.Hide(content)
 		local pieces = 0
 		for _, result in ipairs(results) do
 			pieces = pieces + result.total

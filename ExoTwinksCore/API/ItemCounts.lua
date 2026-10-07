@@ -191,6 +191,7 @@ end, API)
 
 Exo.EventBus:Register("EXO_CHAR_DELETED", invalidate, API)
 Exo.EventBus:Register("EXO_GUILD_UPDATED", invalidate, API)
+Exo.EventBus:Register("EXO_LEGACY_IMPORT_DONE", invalidate, API)
 
 -- Inventar-Uebersicht ------------------------------------------------------------------
 

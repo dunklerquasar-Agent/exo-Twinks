@@ -34,7 +34,8 @@ function Tab.BuildRows(query)
 	if #query >= MIN_QUERY_LEN then
 		local results = Exo.API.SearchRecipes(query)
 		if #results == 0 then
-			return rows -- leer: Render zeigt den zentrierten Leerzustand (1.19.0)
+			rows[#rows + 1] = { text = "|cff808080Keine Rezepte gefunden.|r" }
+			return rows
 		end
 		for _, result in ipairs(results) do
 			local names = {}
@@ -61,7 +62,11 @@ function Tab.BuildRows(query)
 	table.sort(chars, function(a, b) return a.key < b.key end)
 
 	if #chars == 0 then
-		return rows -- leer: Render zeigt den zentrierten Leerzustand (1.19.0)
+		rows[#rows + 1] = { text =
+			"|cff808080Noch keine Berufsdaten. Mit jedem Twink einmal einloggen;|r" }
+		rows[#rows + 1] = { text =
+			"|cff808080Rezepte werden beim Oeffnen des Berufsfensters erfasst.|r" }
+		return rows
 	end
 
 	for _, char in ipairs(chars) do
@@ -135,9 +140,6 @@ end
 local function buildUI(self, content)
 	local W = Exo.WowAPI
 	local Widgets = Exo.UI.Widgets
-
-	-- Einheitlicher Leerzustand (1.19.0) -- Flaeche der Ergebnis-Liste
-	Exo.UI.EmptyState.Attach(content, { top = 26, bottom = 20 })
 
 	local label = Widgets.Label(content, "Rezept suchen:", "GameFontNormal")
 	label:SetPoint("TOPLEFT", 4, -4)
@@ -220,24 +222,13 @@ function Tab:Render(content)
 	self._scroller:SetData(rows)
 
 	local trimmed = self.query:gsub("^%s+", ""):gsub("%s+$", "")
-	local ES = Exo.UI.EmptyState
-	if #rows == 0 then
-		-- Einheitlicher Leerzustand (1.19.0)
-		if #trimmed >= MIN_QUERY_LEN then
-			ES.Show(content, "Keine Rezepte gefunden.")
-		else
-			ES.Show(content, "Noch keine Berufsdaten.",
-				"Mit jedem Twink einmal einloggen; Rezepte werden beim Oeffnen "
-				.. "des Berufsfensters erfasst.")
+	if #trimmed >= MIN_QUERY_LEN then
+		local hits = 0
+		for _, row in ipairs(rows) do
+			if row.text and not row.text:find("Keine Rezepte") then hits = hits + 1 end
 		end
-		self._footer:SetText("")
-	elseif #trimmed >= MIN_QUERY_LEN then
-		ES.Hide(content)
-		-- Suchmodus: jede Zeile ist ein Treffer
-		self._footer:SetText(
-			Exo.UI.Format.Count(#rows, "Rezept", "Rezepte") .. " gefunden")
+		self._footer:SetText(Exo.UI.Format.Count(hits, "Rezept", "Rezepte") .. " gefunden")
 	else
-		ES.Hide(content)
 		self._footer:SetText(
 			"Tipp: Berufsfenster einmal oeffnen, damit Rezepte erfasst werden.")
 	end

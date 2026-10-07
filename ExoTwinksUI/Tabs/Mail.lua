@@ -96,7 +96,10 @@ function Tab.BuildRows()
 		end
 	end
 
-	-- totalMails == 0: Render zeigt den zentrierten Leerzustand (1.19.0)
+	if totalMails == 0 then
+		rows[#rows + 1] = { text =
+			"|cff808080Keine Maildaten. Briefkasten mit jedem Twink einmal oeffnen.|r" }
+	end
 	return rows
 end
 
@@ -105,9 +108,6 @@ end
 local function buildUI(self, content)
 	local W = Exo.WowAPI
 	local Widgets = Exo.UI.Widgets
-
-	-- Einheitlicher Leerzustand (1.19.0) -- Flaeche der Mail-Liste
-	Exo.UI.EmptyState.Attach(content, { top = 4, bottom = 20 })
 
 	local listHost = W.CreateFrame("Frame", nil, content)
 	listHost:SetPoint("TOPLEFT", 0, -4)
@@ -188,15 +188,11 @@ function Tab:Render(content)
 		end
 	end
 	if totalMails > 0 then
-		Exo.UI.EmptyState.Hide(content)
 		self._footer:SetText(string.format("%s bei %s.",
 			Exo.UI.Format.Count(totalMails, "Mail", "Mails"),
 			Exo.UI.Format.Count(charCount, "Charakter", "Charakteren")))
 	else
-		-- Einheitlicher Leerzustand (1.19.0), zentriert in der Listenflaeche
-		Exo.UI.EmptyState.Show(content, "Noch keine Maildaten.",
-			"Der Briefkasten wird beim Oeffnen automatisch erfasst.")
-		self._footer:SetText("")
+		self._footer:SetText("Briefkasten wird beim Oeffnen automatisch erfasst.")
 	end
 end
 

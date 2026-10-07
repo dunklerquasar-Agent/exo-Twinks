@@ -115,17 +115,17 @@ describe("ExoTwinksUI / Uebersicht-Tab (stapelbare Panels)", function()
 			assert.matches("12", byModule.inventory[1]) -- 12 Stueck in Taschen
 		end)
 
-		it("Module ohne Daten zeigen einheitlichen Leerzustand-Text (1.19.0)", function()
+		it("Module ohne Daten zeigen 'Keine Daten.'", function()
 			mock.Reset()
 			Exo = mock.LoadExoCore()
 			mock.SimulateLogin()
 			mock.LoadExoUI()
 			Tab = Exo.UI.OverviewTab
 			local rows = Tab.BuildRows()
-			-- Modul "currencies": Kopfzeile + genau eine "Noch keine Daten."-Zeile
+			-- Modul "currencies": Kopfzeile + genau eine "Keine Daten."-Zeile
 			for index, row in ipairs(rows) do
 				if row.header and row.module == "currencies" then
-					assert.matches("Noch keine Daten", rows[index + 1].text)
+					assert.matches("Keine Daten", rows[index + 1].text)
 				end
 			end
 		end)

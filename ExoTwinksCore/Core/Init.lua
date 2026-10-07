@@ -1,6 +1,6 @@
 -- Core/Init.lua
 -- Bootstrap: einziger Ort mit _G-Beruehrung (globaler Name "Exo" + Slash + Compartment).
--- Verkabelt Scheduler-Tick, ADDON_LOADED und die /exo-Kommandos.
+-- Verkabelt Scheduler-Tick, ADDON_LOADED und die /alto-Kommandos.
 
 local addonName, Exo = ...
 
@@ -21,7 +21,7 @@ local function onAddonLoaded(_, loadedName)
 
 	-- SavedVariables sind ab jetzt verfuegbar -> Store initialisiert,
 	-- migriert und registriert den aktuellen Charakter.
-	-- Uebernahme der eigenen SavedVariables aus einer frueheren Version.
+	-- Uebernahme alter Daten: bis v0.11.1 hiess die SavedVariable AltoCoreDB.
 	if ExoTwinksDB == nil and AltoCoreDB ~= nil then
 		ExoTwinksDB = AltoCoreDB
 		AltoCoreDB = nil
@@ -32,6 +32,14 @@ local function onAddonLoaded(_, loadedName)
 		Exo.version,
 		Exo.Store:GetCurrentKey(),
 		Exo.Store:CountCharacters())
+
+	-- Einmaliger Hinweis, falls Altdaten vom alten Altoholic/DataStore vorliegen
+	local report = Exo.LegacyImport:Scan()
+	if report.found and report.importable > 0 and not ExoTwinksDB.account.options.legacyImportDismissed then
+		Log.emit(string.format(
+			"|cff69ccf0exo-Twinks|r Altes Altoholic/DataStore gefunden: %d importierbare(r) Charakter(e). '/alto import' fuer Details.",
+			report.importable))
+	end
 
 	EventBus:Fire("EXO_CORE_READY")
 end
@@ -228,7 +236,38 @@ subcommands.debug = function(arg)
 	else
 		Log:SetVerbose(true)
 		Log:SetLevel("DEBUG")
-		Log.emit("|cff69ccf0exo-Twinks|r Debug-Modus AN (/exo debug off zum Deaktivieren, /exo debug dump fuer Puffer)")
+		Log.emit("|cff69ccf0exo-Twinks|r Debug-Modus AN (/alto debug off zum Deaktivieren, /alto debug dump fuer Puffer)")
+	end
+end
+
+subcommands.import = function(arg)
+	if arg == "confirm" then
+		local imported, skipped, supplemented = Exo.LegacyImport:Import()
+		local extra = supplemented > 0
+			and string.format(", %d vorhandene um Taschen/Bank/iLvl ergaenzt", supplemented)
+			or ""
+		Log.emit(string.format(
+			"|cff69ccf0exo-Twinks|r Import abgeschlossen: %d uebernommen, %d uebersprungen (bereits vorhanden)%s.",
+			imported, skipped, extra))
+	elseif arg == "dismiss" then
+		Exo.Store:GetAccount().options.legacyImportDismissed = true
+		Log.emit("|cff69ccf0exo-Twinks|r Ok, der Import-Hinweis beim Login wird nicht mehr angezeigt.")
+	else
+		local report = Exo.LegacyImport:Scan()
+		if not report.found then
+			Log.emit("|cff69ccf0exo-Twinks|r Keine alten Altoholic/DataStore-Daten gefunden.")
+		elseif report.importable == 0 then
+			Log.emit(string.format(
+				"|cff69ccf0exo-Twinks|r %d Legacy-Charakter(e) gefunden, alle bereits in der neuen DB.", report.total))
+		else
+			Log.emit(string.format(
+				"|cff69ccf0exo-Twinks|r %d Legacy-Charakter(e) gefunden, %d davon importierbar:", report.total, report.importable))
+			for _, key in ipairs(report.keys) do
+				Log.emit("  " .. key)
+			end
+			Log.emit("|cff69ccf0exo-Twinks|r '/alto import confirm' fuehrt den Import aus (Altdaten bleiben unangetastet).")
+			Log.emit("|cff69ccf0exo-Twinks|r '/alto import dismiss' blendet den Login-Hinweis aus.")
+		end
 	end
 end
 
@@ -236,6 +275,7 @@ subcommands.help = function()
 	Log.emit("|cff69ccf0exo-Twinks|r Kommandos:")
 	Log.emit("  /exo           - UI oeffnen/schliessen (auch /twinks, /alto)")
 	Log.emit("  /exo version  - Version anzeigen")
+	Log.emit("  /exo import    - Altdaten-Import: anzeigen | confirm | dismiss")
 	Log.emit("  /exo keys      - Schluesselsteine aller Twinks ansagen")
 	Log.emit("  /exo vault     - offene Schatzkammer-Belohnungen")
 	Log.emit("  /exo mail      - bald ablaufende Mails")

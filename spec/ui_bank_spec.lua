@@ -98,17 +98,12 @@ describe("ExoTwinksUI / Bank-Tab (1.9.0)", function()
 			assert.truthy(Tab._GetTargetButton():GetText():find("Anna"))
 		end)
 
-		it("Charwechsel per SelectTarget zeigt Leerzustand fuer Borg (1.19.0)", function()
+		it("Charwechsel per SelectTarget zeigt Scan-Hinweis fuer Borg", function()
 			local content = CreateFrame("Frame")
 			Tab:Render(content)
 			Tab:SelectTarget(2) -- Borg
 			assert.equal(0, #Tab._GetScroller().items)
-			local es = content._emptyState
-			assert.is_true(es.host:IsShown())
-			assert.truthy(es.title:GetText():find("Noch keine Bankdaten", 1, true))
-			assert.truthy(es.hint:GetText():find("Bank oeffnen", 1, true))
-			-- Footer zeigt nur noch die freien Plaetze
-			assert.is_nil(Tab._GetFooter():GetText():find("Bank besuchen", 1, true))
+			assert.truthy(Tab._GetFooter():GetText():find("Bank besuchen"))
 		end)
 
 		it("Hover ueber eine Bank-Zeile triggert den GameTooltip", function()
