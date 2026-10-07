@@ -8,7 +8,7 @@
 ## X-Website: https://www.curseforge.com/wow/addons/exo-twinks
 ## Category: Other
 ## Category-deDE: Sonstiges
-## IconTexture: Interface\Icons\inv_drink_13
+## IconTexture: Interface\Icons\inv_misc_key_02
 ## Dependencies: ExoTwinksCore
 
 Season.lua

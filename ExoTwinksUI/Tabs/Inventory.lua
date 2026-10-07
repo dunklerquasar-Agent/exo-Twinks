@@ -719,7 +719,7 @@ function Tab:Render(content)
 
 	if #items == 0 then
 		self._footer:SetText(
-			"Keine Daten. Charakter einmal einloggen (Bank: Bank besuchen) oder /exo import nutzen."
+			"Keine Daten. Charakter einmal einloggen (Bank: Bank besuchen)."
 			.. freeText)
 	else
 		local pieces, types = 0, 0
