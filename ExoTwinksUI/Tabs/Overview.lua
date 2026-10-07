@@ -456,8 +456,10 @@ local function buildAuctionRows()
 		rows[#rows + 1] = { text = table.concat(parts, "  ") }
 	end
 	if #rows == 0 then
+		-- Einheitlicher Leerzustand-Text (1.19.0)
 		rows[#rows + 1] = { text =
-			"|cff808080Keine Auktionsdaten. Auktionshaus einmal oeffnen.|r" }
+			Exo.UI.EmptyState.Text("Noch keine Auktionsdaten.",
+				"Auktionshaus einmal oeffnen.") }
 	elseif summary.totalCount > 0 then
 		rows[#rows + 1] = { text = string.format(
 			"|cffffd700Gesamt|r:  %s, Buyout %s",
@@ -504,7 +506,8 @@ function Tab.BuildRows()
 			if not collapsed then
 				local content = Tab.BuildModuleRows(id)
 				if #content == 0 then
-					content = { { text = "|cff808080Keine Daten.|r" } }
+					-- Einheitlicher Leerzustand-Text (1.19.0)
+					content = { { text = Exo.UI.EmptyState.Text("Noch keine Daten.") } }
 				end
 				for _, row in ipairs(content) do rows[#rows + 1] = row end
 			end

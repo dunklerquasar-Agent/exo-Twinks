@@ -389,6 +389,9 @@ end
 local function buildUI(self, content)
 	local Widgets = Exo.UI.Widgets
 
+	-- Einheitlicher Leerzustand (1.19.0) -- Flaeche der Item-Liste
+	Exo.UI.EmptyState.Attach(content, { top = 48, bottom = 20 })
+
 	-- Modus-Umschalter: Bestand (Browse) | Suche (accountweit mit Filtern)
 	self._modeButtons = {}
 	self._modeButtons.browse = Widgets.Button(content, "Bestand", 64, 20, function()
@@ -660,6 +663,7 @@ function Tab:Render(content)
 		self._scroller:GetFrame():Hide()
 		self._iconScroller:GetFrame():Hide()
 		self._footer:Hide()
+		Exo.UI.EmptyState.Hide(content) -- Suche hat ihren eigenen Leerzustand
 		self._searchHost:Show()
 		Exo.UI.SearchTab:Render(self._searchHost)
 		return
@@ -718,10 +722,14 @@ function Tab:Render(content)
 	end
 
 	if #items == 0 then
-		self._footer:SetText(
-			"Keine Daten. Charakter einmal einloggen (Bank: Bank besuchen) oder /exo import nutzen."
-			.. freeText)
+		-- Leerzustand zentriert in der Listenflaeche (1.19.0);
+		-- der Footer zeigt nur noch die freien Plaetze.
+		Exo.UI.EmptyState.Show(content,
+			"Noch keine Inventar-Daten.",
+			"Charakter einmal einloggen (Bank: Bank oeffnen) oder /exo import nutzen.")
+		self._footer:SetText(freeText)
 	else
+		Exo.UI.EmptyState.Hide(content)
 		local pieces, types = 0, 0
 		for _, item in ipairs(items) do
 			pieces = pieces + item.total

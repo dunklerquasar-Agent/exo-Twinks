@@ -1,4 +1,4 @@
-# exo-Twinks 1.18.0
+# exo-Twinks 1.19.0
 
 Der Account-Manager fuer World of Warcraft (Retail/Midnight): vereint die
 Kernfunktionen von **Altoholic**, **AlterEgo** und **SavedInstances** in

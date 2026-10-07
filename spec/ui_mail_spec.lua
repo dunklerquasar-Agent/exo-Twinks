@@ -33,8 +33,13 @@ describe("ExoTwinksUI / Post-Tab", function()
 	end)
 
 	describe("BuildRows", function()
-		it("Hinweis ohne Maildaten", function()
-			assert.matches("Keine Maildaten", Tab.BuildRows()[1].text)
+		it("leere Zeilen ohne Maildaten; Leerzustand im Render (1.19.0)", function()
+			assert.same({}, Tab.BuildRows())
+			local content = CreateFrame("Frame")
+			Tab:Render(content)
+			local es = content._emptyState
+			assert.is_true(es.host:IsShown())
+			assert.truthy(es.title:GetText():find("Noch keine Maildaten", 1, true))
 		end)
 
 		it("Kopfzeile pro Char + eine Zeile je Mail", function()

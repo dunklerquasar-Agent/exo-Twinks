@@ -397,10 +397,13 @@ describe("ExoTwinksUI / Inventar-Tab", function()
 			assert.truthy(text:find("26 Stueck gesamt", 1, true)) -- 22 + 4
 		end)
 
-		it("Zyklus-Button wechselt zum naechsten Char und zeigt Hinweis bei leeren Daten", function()
+		it("Zyklus-Button wechselt zum naechsten Char und zeigt Leerzustand (1.19.0)", function()
 			Tab:CycleTarget() -- -> Borg (keine Taschendaten)
 			assert.equal(0, #Tab._GetScroller():GetData())
-			assert.truthy(Tab._GetFooter():GetText():find("Keine Daten", 1, true))
+			local es = content._emptyState
+			assert.is_true(es.host:IsShown())
+			assert.truthy(es.title:GetText():find("Noch keine Inventar-Daten", 1, true))
+			assert.truthy(es.hint:GetText():find("/exo import", 1, true))
 		end)
 
 		it("Zyklus-Button erreicht die Kriegsmeutenbank und startet wieder vorn", function()
