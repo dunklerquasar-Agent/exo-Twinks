@@ -13,6 +13,9 @@ local Tab = {
 	sortDesc = true,
 	targetIndex = 1,
 	viewMode = "list", -- "list" | "icons" (1.9.1)
+	-- Einheitlicher Leerzustand (1.19.0), wird von ItemList.Present gezeigt
+	emptyTitle = "Noch keine Bankdaten.",
+	emptyHint = "Mit diesem Charakter einmal die Bank oeffnen.",
 }
 Exo.UI.BankTab = Tab
 
@@ -197,9 +200,9 @@ function Tab:Render(content)
 	end
 
 	if #items == 0 then
-		self._footer:SetText(
-			"Keine Bankdaten. Mit diesem Charakter einmal die Bank besuchen."
-			.. freeText)
+		-- Leerzustand-Text liegt jetzt zentriert in der Listenflaeche (1.19.0);
+		-- der Footer zeigt nur noch die freien Plaetze.
+		self._footer:SetText(freeText)
 	else
 		local pieces = 0
 		for _, item in ipairs(items) do pieces = pieces + item.total end

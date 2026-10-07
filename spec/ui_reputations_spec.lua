@@ -69,13 +69,18 @@ describe("ExoTwinksUI / Ruf-Tab", function()
 			assert.equal(3, #rows) -- Kopf + 2 Chars
 		end)
 
-		it("Hinweis ohne Daten", function()
+		it("leere Zeilen ohne Daten; Leerzustand im Render (1.19.0)", function()
 			mock.Reset()
 			Exo = mock.LoadExoCore()
 			mock.SimulateLogin()
 			mock.LoadExoUI()
 			Tab = Exo.UI.ReputationsTab
-			assert.matches("keine Ruf%-Daten", Tab.BuildRows("")[1].text)
+			assert.same({}, Tab.BuildRows(""))
+			local content = CreateFrame("Frame")
+			Tab:Render(content)
+			local es = content._emptyState
+			assert.is_true(es.host:IsShown())
+			assert.truthy(es.title:GetText():find("Noch keine Ruf-Daten", 1, true))
 		end)
 	end)
 

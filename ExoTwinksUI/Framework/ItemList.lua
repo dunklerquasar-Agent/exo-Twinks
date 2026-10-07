@@ -2,7 +2,8 @@
 -- Wiederverwendbare, virtualisierte Item-Liste (1.9.0): Titel, sortierbare
 -- Spalten-Header, Zeilen mit Icon + Hover-Tooltip + Shift-Klick-Itemlink,
 -- optionale Kopfzeilen (section) und Fusszeile. Seit 1.9.1 zusaetzlich mit
--- umschaltbarer SYMBOL-Ansicht (Icon-Raster wie im Inventar).
+-- umschaltbarer SYMBOL-Ansicht (Icon-Raster wie im Inventar). Seit 1.19.0
+-- zeigt die Liste bei 0 Zeilen den einheitlichen Leerzustand (EmptyState).
 -- Genutzt von den Reitern "Bank", "KM-Bank" und "KM-Items".
 
 local ItemList = {}
@@ -144,9 +145,13 @@ end
 -- Fusszeile in den Tab. opts (optional): { viewX = x-Offset des
 -- "Symbole"-Buttons von TOPRIGHT (Standard -4) }.
 -- Erwartet am Tab: OnHeaderClick(colId) und Render(content).
+-- Optional am Tab: emptyTitle/emptyHint -> einheitlicher Leerzustand (1.19.0),
+-- den Present() automatisch zeigt, wenn keine Zeilen vorhanden sind.
 function ItemList.Build(tab, content, columns, titleText, opts)
 	local Widgets = Exo.UI.Widgets
 	opts = opts or {}
+
+	Exo.UI.EmptyState.Attach(content) -- zuerst, damit er unter Spaeter-Geschaffenen liegt
 
 	tab._title = Widgets.Label(content, titleText, "GameFontNormal")
 	tab._title:SetPoint("TOPLEFT", 4, 0)
@@ -323,4 +328,13 @@ function ItemList.Present(tab, rows)
 		tab._scroller:GetFrame():Show()
 	end
 	tab._viewButton:SetText(tab.viewMode == "icons" and "Liste" or "Symbole")
+
+	-- Einheitlicher Leerzustand (1.19.0): keine Zeilen -> zentrierter
+	-- Hinweis (Texte kommen aus tab.emptyTitle/tab.emptyHint).
+	local ES = Exo.UI.EmptyState
+	if #rows == 0 then
+		ES.Show(tab._content, tab.emptyTitle, tab.emptyHint)
+	else
+		ES.Hide(tab._content)
+	end
 end

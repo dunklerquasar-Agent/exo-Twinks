@@ -600,6 +600,7 @@ return mock.LoadAddon({
 		root .. "/Framework/Theme.lua",
 		root .. "/Framework/VirtualScroll.lua",
 		root .. "/Framework/ItemList.lua",
+		root .. "/Framework/EmptyState.lua",
 		root .. "/Framework/Window.lua",
 		root .. "/Tabs/Overview.lua",
 		root .. "/Tabs/Characters.lua",
