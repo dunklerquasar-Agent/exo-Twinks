@@ -1,10 +1,10 @@
--- spec/release_1_18_1_spec.lua
--- Bugfix "1 Minute" (1.18.1): Format.TimeAgo wurde in Uebersicht und
+-- spec/release_1_19_1_spec.lua
+-- Bugfix "1 Minute" (1.19.1): Format.TimeAgo wurde in Uebersicht und
 -- Charakter-Vergleich OHNE `now` aufgerufen -- nil wurde zu 0 und jeder
 -- Zeitstempel damit zu "1 Minute". Fehlt `now`, gilt jetzt die aktuelle Zeit.
 local mock = require("spec.wow_mock")
 
-describe("Release 1.18.1: TimeAgo ohne now-Parameter", function()
+describe("Release 1.19.1: TimeAgo ohne now-Parameter", function()
 	local Exo
 
 	before_each(function()

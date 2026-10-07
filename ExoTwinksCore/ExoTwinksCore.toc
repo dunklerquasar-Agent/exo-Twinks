@@ -3,13 +3,13 @@
 ## Notes: exo-Twinks - Twink-Verwaltung: Uebersicht, Items, Raids, Mythic+ (Core)
 ## Author: exo-Twinks Contributors
 ## X-License: GPL-3.0
-## Version: 1.18.1
-## Group: exo-Twinks
+## Version: 1.19.1
+## Group: ExoTwinksCore
 ## X-Website: https://www.curseforge.com/wow/addons/exo-twinks
 ## Category: Other
 ## Category-deDE: Sonstiges
 ## SavedVariables: ExoTwinksDB, AltoCoreDB
-## IconTexture: Interface\Icons\inv_drink_13
+## IconTexture: Interface\Icons\inv_misc_key_02
 ## AddonCompartmentFunc: ExoTwinks_OnAddonCompartmentClick
 
 Core\Log.lua
@@ -21,7 +21,6 @@ Storage\Schema.lua
 Storage\Migrations.lua
 Storage\Migrations\001_initial.lua
 Storage\Store.lua
-Storage\LegacyImport.lua
 
 API\Public.lua
 API\ItemCounts.lua
