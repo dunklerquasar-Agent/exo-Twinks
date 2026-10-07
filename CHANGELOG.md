@@ -2,6 +2,21 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
+## [1.18.0] - 2026-10-07
+
+### Geaendert
+- Uebersicht-Modul "Waehrungen" im Altoholic-Stil: Pro Charakter stehen
+  nur noch die Waehrungen der AKTUELLEN Erweiterung (oberste Kategorie
+  der Spielliste, z. B. Midnight) -- alte/irrelevante Waehrungen wie
+  Erinnerungsreste oder Dienstmedaillen fliegen aus der Uebersicht.
+  Waehrungen mit Cap (Wappen, Valorsteine usw.) stehen zuerst.
+- Account-weite Waehrungen (z. B. Haendlerdevisen) erscheinen nicht mehr
+  bei jedem Twink, sondern einmalig in der Kopfzeile des Moduls:
+  "Waehrungen   Account: Haendlerdevisen 11.480".
+- Hinweis: Der Filter greift je Char nach dem naechsten Login (Scan
+  liefert dann die Kategorie-Daten); bis dahin zeigt die Uebersicht fuer
+  diesen Char die bisherige Liste.
+
 ## [1.17.1] - 2026-10-07
 
 ### Behoben
