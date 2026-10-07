@@ -137,19 +137,68 @@ local function buildCharRows()
 	return rows
 end
 
+-- Uebersicht "Waehrungen" (1.18.0, Altoholic-Stil): pro Char nur noch die
+-- Waehrungen der AKTUELLEN Erweiterung (oberste Kategorie der Spielliste,
+-- z. B. Midnight) -- alte/irrelevante Waehrungen fliegen raus. Account-weite
+-- Waehrungen (acc-Flag, z. B. Haendlerdevisen) erscheinen nicht je Char,
+-- sondern einmalig in der Modul-Kopfzeile (Tab.AccountCurrencySuffix).
+
+-- Einmalige Account-Werte fuer die Kopfzeile: "Account: Haendlerdevisen 11.480"
+function Tab.AccountCurrencySuffix()
+	local best = {}
+	for _, key in ipairs(Exo.API.GetCharacterKeys()) do
+		for id, c in pairs(Exo.API.GetCurrencies(key)) do
+			if c.acc and (not best[id] or (c.qty or 0) > (best[id].qty or 0)) then
+				best[id] = c
+			end
+		end
+	end
+	local ids = {}
+	for id in pairs(best) do ids[#ids + 1] = id end
+	if #ids == 0 then return "" end
+	table.sort(ids, function(a, b)
+		return (best[a].name or "") < (best[b].name or "")
+	end)
+	local parts = {}
+	for _, id in ipairs(ids) do
+		local c = best[id]
+		parts[#parts + 1] = (c.name or ("Waehrung " .. id))
+			.. " |cffffffff" .. Exo.UI.Format.GroupDigits(c.qty or 0) .. "|r"
+	end
+	return "   |cff808080Account:|r " .. table.concat(parts, "  ")
+end
+
 local function buildCurrencyRows()
+	-- kleinste Kategorie-Position ueber alle Chars = aktuelle Erweiterung
+	local minOrder
+	for _, s in ipairs(sortedSummaries()) do
+		for _, c in pairs(Exo.API.GetCurrencies(s.key)) do
+			if c.catOrder and not c.acc
+				and (not minOrder or c.catOrder < minOrder) then
+				minOrder = c.catOrder
+			end
+		end
+	end
+
 	local rows = {}
 	for _, s in ipairs(sortedSummaries()) do
 		local currencies = Exo.API.GetCurrencies(s.key)
 		local ids = {}
-		for id in pairs(currencies) do ids[#ids + 1] = id end
-		-- 1.17.0: aktuelle Erweiterung zuerst (Spiel-Reihenfolge der
-		-- Kategorien), innerhalb der Kategorie alphabetisch
+		for id, c in pairs(currencies) do
+			-- account-weite stehen in der Kopfzeile; ohne Kategorie-Daten
+			-- (Char seit dem Update noch nicht eingeloggt) greift der Filter
+			-- erst nach dem naechsten Scan
+			if not c.acc and (not minOrder or c.catOrder == minOrder) then
+				ids[#ids + 1] = id
+			end
+		end
+		-- wichtigste zuerst: Waehrungen mit Cap (Wappen/Steine usw.) vor den
+		-- uebrigen, innerhalb davon alphabetisch
 		table.sort(ids, function(a, b)
-			local oa = currencies[a].catOrder or 9999
-			local ob = currencies[b].catOrder or 9999
-			if oa ~= ob then return oa < ob end
-			return (currencies[a].name or "") < (currencies[b].name or "")
+			local ca, cb = currencies[a], currencies[b]
+			local capA, capB = (ca.max or 0) > 0, (cb.max or 0) > 0
+			if capA ~= capB then return capA end
+			return (ca.name or "") < (cb.name or "")
 		end)
 		local parts = {}
 		for _, id in ipairs(ids) do
@@ -442,9 +491,15 @@ function Tab.BuildRows()
 	for _, id in ipairs(Tab.GetOrder()) do
 		if Tab.IsModuleShown(id) then
 			local collapsed = Tab.IsCollapsed(id)
+			local label = MODULE_LABELS[id]
+			-- 1.18.0: account-weite Waehrungen (z. B. Haendlerdevisen) stehen
+			-- einmalig in der Kopfzeile des Waehrungs-Moduls
+			if id == "currencies" then
+				label = label .. Tab.AccountCurrencySuffix()
+			end
 			rows[#rows + 1] = {
 				header = true, module = id,
-				label = MODULE_LABELS[id], collapsed = collapsed,
+				label = label, collapsed = collapsed,
 			}
 			if not collapsed then
 				local content = Tab.BuildModuleRows(id)
