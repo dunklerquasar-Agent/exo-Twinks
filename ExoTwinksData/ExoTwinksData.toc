@@ -4,7 +4,7 @@
 ## Author: exo-Twinks Contributors
 ## X-License: GPL-3.0
 ## Version: data-2026.09.0
-## Group: exo-Twinks
+## Group: ExoTwinksCore
 ## X-Website: https://www.curseforge.com/wow/addons/exo-twinks
 ## Category: Other
 ## Category-deDE: Sonstiges
