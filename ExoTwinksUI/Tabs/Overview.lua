@@ -137,7 +137,7 @@ local function buildCharRows()
 	return rows
 end
 
--- Uebersicht "Waehrungen" (1.18.0): pro Char nur noch die
+-- Uebersicht "Waehrungen" (1.18.0, Altoholic-Stil): pro Char nur noch die
 -- Waehrungen der AKTUELLEN Erweiterung (oberste Kategorie der Spielliste,
 -- z. B. Midnight) -- alte/irrelevante Waehrungen fliegen raus. Account-weite
 -- Waehrungen (acc-Flag, z. B. Haendlerdevisen) erscheinen nicht je Char,
@@ -456,10 +456,8 @@ local function buildAuctionRows()
 		rows[#rows + 1] = { text = table.concat(parts, "  ") }
 	end
 	if #rows == 0 then
-		-- Einheitlicher Leerzustand-Text (1.19.0)
 		rows[#rows + 1] = { text =
-			Exo.UI.EmptyState.Text("Noch keine Auktionsdaten.",
-				"Auktionshaus einmal oeffnen.") }
+			"|cff808080Keine Auktionsdaten. Auktionshaus einmal oeffnen.|r" }
 	elseif summary.totalCount > 0 then
 		rows[#rows + 1] = { text = string.format(
 			"|cffffd700Gesamt|r:  %s, Buyout %s",
@@ -506,8 +504,7 @@ function Tab.BuildRows()
 			if not collapsed then
 				local content = Tab.BuildModuleRows(id)
 				if #content == 0 then
-					-- Einheitlicher Leerzustand-Text (1.19.0)
-					content = { { text = Exo.UI.EmptyState.Text("Noch keine Daten.") } }
+					content = { { text = "|cff808080Keine Daten.|r" } }
 				end
 				for _, row in ipairs(content) do rows[#rows + 1] = row end
 			end

@@ -2,23 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionierung: SemVer.
 
-## [1.19.0] - 2026-10-07
+## [1.18.1] - 2026-10-07
 
-### Hinzugefuegt
-- Einheitliche Leerzaeustaende in allen Reitern (neues Framework-Modul
-  `Exo.UI.EmptyState`): Wenn noch keine Daten vorliegen, zeigt der Reiter
-  jetzt zentriert in der Inhaltsflaeche einen einheitlichen Hinweis im
-  Muster "Noch keine <Daten>." + Tipp, wie der Nutzer Daten bekommt --
-  statt blanker Listenflaeche mit verstreuten Fusszeilen-Texten.
-  Betrifft: Bank, KM-Bank, KM-Items, Inventar, Charaktere, Berufe,
-  Ruf, Post, Suche ("Keine Treffer.") sowie die Uebersichts-Module
-  ("Noch keine Daten.") und die Char-Details-Sektionen.
-- Fusszeilen zeigen im Leerzustand nur noch echte Info (z. B. freie
-  Bankplaetze) statt der doppelten Leer-Hinweise.
-
-### Geaendert
-- Leerzustand-Texte in allen Reitern einheitlich formuliert und zentral
-  im EmptyState-Modul gepflegt (vorher: 9 verschiedene Wortlauefe).
+### Behoben
+- "Zuletzt online" zeigte in der Uebersicht und im Charakter-Vergleich
+  bei ALLEN Twinks "1 Minute" an. Ursache: TimeAgo wurde dort ohne
+  aktuelle Zeit aufgerufen; fehlt der Parameter, gilt jetzt automatisch
+  die aktuelle Uhrzeit. Der Charaktere-Tab war nicht betroffen.
 
 ## [1.18.0] - 2026-10-07
 

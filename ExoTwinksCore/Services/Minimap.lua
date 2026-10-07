@@ -15,7 +15,7 @@ button:RegisterForClicks("LeftButtonUp")
 
 local icon = button:CreateTexture(nil, "BACKGROUND")
 if icon then
-	icon:SetTexture("Interface\\Icons\\inv_misc_key_02")
+	icon:SetTexture("Interface\\Icons\\inv_drink_13")
 	icon:SetSize(20, 20)
 	icon:SetPoint("CENTER")
 end

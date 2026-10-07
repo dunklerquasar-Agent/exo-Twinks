@@ -541,10 +541,6 @@ end
 local function buildUI(self, content)
 	local Widgets = Exo.UI.Widgets
 
-	-- Einheitlicher Leerzustand (1.19.0) -- VOR dem Detail-Host erzeugen,
-	-- damit das Detail-Panel bei Bedarf ueber ihm liegt (Z-Order).
-	Exo.UI.EmptyState.Attach(content, { top = 24, bottom = 20 })
-
 	-- Rollen-Filter (1.5.0), links oben vor den Kopfzellen
 	self._roleButton = Widgets.Button(content, "Rolle: Alle", 130, 18, function()
 		self:CycleRoleFilter()
@@ -768,7 +764,6 @@ function Tab:Render(content)
 		self._pageButton:Hide()
 		self._scroller:GetFrame():Hide()
 		self._footer:SetText("")
-		Exo.UI.EmptyState.Hide(content)
 		self._detailHost:Show()
 		Exo.UI.CharacterDetail:Render(self._detailHost, self.detailKey, self.compareKey)
 		return
@@ -805,12 +800,8 @@ function Tab:Render(content)
 
 	if #matrix.chars == 0 then
 		self._scroller:SetData({})
-		-- Einheitlicher Leerzustand (1.19.0), zentriert in der Matrixflaeche
-		Exo.UI.EmptyState.Show(content, "Noch keine Charakterdaten.",
-			"Einfach mit jedem Twink einmal einloggen.")
-		self._footer:SetText("")
+		self._footer:SetText("Noch keine Charakterdaten. Einfach mit jedem Twink einmal einloggen.")
 	else
-		Exo.UI.EmptyState.Hide(content)
 		self._scroller:SetData(matrix.rows)
 		local totalGold = 0
 		for _, char in ipairs(matrix.chars) do

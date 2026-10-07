@@ -86,7 +86,11 @@ function Tab.BuildRows(query)
 		end
 	end
 
-	-- leer: Render zeigt den zentrierten Leerzustand (1.19.0)
+	if #rows == 0 then
+		rows[#rows + 1] = { text = query == ""
+			and "|cff808080Noch keine Ruf-Daten. Mit jedem Twink einmal einloggen.|r"
+			or "|cff808080Keine Fraktion gefunden.|r" }
+	end
 	return rows
 end
 
@@ -104,9 +108,6 @@ end
 local function buildUI(self, content)
 	local W = Exo.WowAPI
 	local Widgets = Exo.UI.Widgets
-
-	-- Einheitlicher Leerzustand (1.19.0) -- Flaeche der Ergebnis-Liste
-	Exo.UI.EmptyState.Attach(content, { top = 26, bottom = 20 })
 
 	local label = Widgets.Label(content, "Fraktion suchen:", "GameFontNormal")
 	label:SetPoint("TOPLEFT", 4, -4)
@@ -173,27 +174,13 @@ function Tab:Render(content)
 	local rows = Tab.BuildRows(self.query)
 	self._scroller:SetData(rows)
 
-	local trimmed = (self.query or ""):gsub("^%s+", ""):gsub("%s+$", "")
-	if #rows == 0 then
-		-- Einheitlicher Leerzustand (1.19.0)
-		local ES = Exo.UI.EmptyState
-		if trimmed == "" then
-			ES.Show(content, "Noch keine Ruf-Daten.",
-				"Mit jedem Twink einmal einloggen.")
-		else
-			ES.Show(content, "Keine Fraktion gefunden.")
-		end
-		self._footer:SetText("")
-	else
-		Exo.UI.EmptyState.Hide(content)
-		-- Footer (1.1.1): Zaehlung + Legende
-		local factions = 0
-		for _, row in ipairs(rows) do
-			if row.header then factions = factions + 1 end
-		end
-		self._footer:SetText(string.format("%s.  Gruen = Geehrt oder besser.",
-			Exo.UI.Format.Count(factions, "Fraktion", "Fraktionen")))
+	-- Footer (1.1.1): Zaehlung + Legende
+	local factions = 0
+	for _, row in ipairs(rows) do
+		if row.header then factions = factions + 1 end
 	end
+	self._footer:SetText(string.format("%s.  Gruen = Geehrt oder besser.",
+		Exo.UI.Format.Count(factions, "Fraktion", "Fraktionen")))
 end
 
 -- Test-Helfer

@@ -17,9 +17,6 @@ local BankTab = {
 	sortBy = "total",
 	sortDesc = true,
 	viewMode = "list", -- "list" | "icons" (1.9.1)
-	-- Einheitlicher Leerzustand (1.19.0), wird von ItemList.Present gezeigt
-	emptyTitle = "Noch keine Kriegsmeutenbank-Daten.",
-	emptyHint = "Die Kriegsmeutenbank einmal am Bankfach oeffnen.",
 }
 Exo.UI.WarbandBankTab = BankTab
 
@@ -74,9 +71,8 @@ function BankTab:Render(content)
 			space.free, space.size)
 	end
 	if #items == 0 then
-		-- Leerzustand-Text zentriert in der Listenflaeche (1.19.0);
-		-- der Footer zeigt nur noch die freien Plaetze.
-		self._footer:SetText(freeText)
+		self._footer:SetText(
+			"Keine Daten. Kriegsmeutenbank einmal am Bankfach oeffnen." .. freeText)
 	else
 		local pieces = 0
 		for _, item in ipairs(items) do pieces = pieces + item.total end
@@ -102,9 +98,6 @@ local ItemsTab = {
 	sortBy = "total",
 	sortDesc = true,
 	viewMode = "list", -- "list" | "icons" (1.9.1)
-	-- Einheitlicher Leerzustand (1.19.0), wird von ItemList.Present gezeigt
-	emptyTitle = "Noch keine kriegsmeutengebundenen Items.",
-	emptyHint = "Charaktere einmal einloggen (Bank zaehlt nach Bankbesuch).",
 }
 Exo.UI.WarboundTab = ItemsTab
 
@@ -161,8 +154,8 @@ function ItemsTab:Render(content)
 	L.Present(self, self.BuildWarboundRows(groups, self.sortBy, self.sortDesc))
 
 	if #groups == 0 then
-		-- Leerzustand-Text zentriert in der Listenflaeche (1.19.0)
-		self._footer:SetText("")
+		self._footer:SetText("Keine kriegsmeutengebundenen Items gefunden."
+			.. " Tipp: Charaktere einmal einloggen (Bank zaehlt nach Bankbesuch).")
 	else
 		local kinds, pieces = 0, 0
 		for _, group in ipairs(groups) do

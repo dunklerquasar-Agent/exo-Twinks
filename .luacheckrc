@@ -1,8 +1,9 @@
--- luacheck-Konfiguration fuer exo-Twinks
+-- luacheck-Konfiguration fuer AltoNG
 std = "lua51"
 max_line_length = 160
 self = false            -- erlaubt ungenutztes 'self' in Methoden
 exclude_files = {
+	"**/Libs/**",
 	".luacheckrc",
 }
 

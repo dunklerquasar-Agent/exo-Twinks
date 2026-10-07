@@ -47,7 +47,6 @@ function mock.Reset()
 			_scripts = {},
 			_shown = true,
 			_fontStrings = {},
-			_textures = {},
 		}
 		frame.RegisterEvent = function(self, event) self._events[event] = true end
 		frame.UnregisterEvent = function(self, event) self._events[event] = nil end
@@ -81,12 +80,8 @@ function mock.Reset()
 			self._fontStrings[#self._fontStrings + 1] = fs
 			return fs
 		end
-		frame.CreateTexture = function(self)
-			local texture = {}
-			texture.SetTexture = function(tex, path) tex._texture = path end
-			setmetatable(texture, { __index = function() return function() end end })
-			self._textures[#self._textures + 1] = texture
-			return texture
+		frame.CreateTexture = function()
+			return setmetatable({}, { __index = function() return function() end end })
 		end
 		setmetatable(frame, { __index = function() return function() end end })
 		state.frames[#state.frames + 1] = frame
@@ -523,6 +518,12 @@ function mock.Reset()
 	_G.AltoCoreDB = nil
 	_G.Exo = nil
 
+	-- Legacy-SavedVariables (Altoholic/DataStore) aufraeumen
+	_G.DataStore_CharacterIDs = nil
+	_G.DataStore_Characters_Info = nil
+	_G.DataStore_Containers_Characters = nil
+	_G.DataStore_Containers_Warbank = nil
+	_G.DataStore_Inventory_Characters = nil
 	for i = 1, 10 do
 		_G["SLASH_ALTOHOLIC" .. i] = nil
 	end
@@ -558,6 +559,7 @@ return mock.LoadAddon({
 		root .. "/Storage/Migrations.lua",
 		root .. "/Storage/Migrations/001_initial.lua",
 		root .. "/Storage/Store.lua",
+		root .. "/Storage/LegacyImport.lua",
 		root .. "/API/Public.lua",
 		root .. "/API/ItemCounts.lua",
 		root .. "/Collectors/Auctions.lua",
@@ -600,7 +602,6 @@ return mock.LoadAddon({
 		root .. "/Framework/Theme.lua",
 		root .. "/Framework/VirtualScroll.lua",
 		root .. "/Framework/ItemList.lua",
-		root .. "/Framework/EmptyState.lua",
 		root .. "/Framework/Window.lua",
 		root .. "/Tabs/Overview.lua",
 		root .. "/Tabs/Characters.lua",
