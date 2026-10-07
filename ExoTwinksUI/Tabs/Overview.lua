@@ -137,7 +137,7 @@ local function buildCharRows()
 	return rows
 end
 
--- Uebersicht "Waehrungen" (1.18.0, Altoholic-Stil): pro Char nur noch die
+-- Uebersicht "Waehrungen" (1.18.0): pro Char nur noch die
 -- Waehrungen der AKTUELLEN Erweiterung (oberste Kategorie der Spielliste,
 -- z. B. Midnight) -- alte/irrelevante Waehrungen fliegen raus. Account-weite
 -- Waehrungen (acc-Flag, z. B. Haendlerdevisen) erscheinen nicht je Char,

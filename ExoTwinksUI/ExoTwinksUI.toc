@@ -4,11 +4,11 @@
 ## Author: exo-Twinks Contributors
 ## X-License: GPL-3.0
 ## Version: 1.19.0
-## Group: exo-Twinks
+## Group: ExoTwinksCore
 ## X-Website: https://www.curseforge.com/wow/addons/exo-twinks
 ## Category: Other
 ## Category-deDE: Sonstiges
-## IconTexture: Interface\Icons\inv_drink_13
+## IconTexture: Interface\Icons\inv_misc_key_02
 ## Dependencies: ExoTwinksCore
 ## LoadOnDemand: 1
 

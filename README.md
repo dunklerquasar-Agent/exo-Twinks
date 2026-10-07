@@ -1,8 +1,8 @@
 # exo-Twinks 1.19.0
 
-Der Account-Manager fuer World of Warcraft (Retail/Midnight): vereint die
-Kernfunktionen von **Altoholic**, **AlterEgo** und **SavedInstances** in
-einem Addon mit einheitlicher, frei konfigurierbarer Oberflaeche.
+Der Account-Manager fuer World of Warcraft (Retail/Midnight): verwaltet
+Charaktere, Inventar, Berufe, Mythic+, Raids und Wochenfortschritt mit
+einer einheitlichen, frei konfigurierbaren Oberflaeche.
 
 ## Download & Installation
 
@@ -35,7 +35,6 @@ Addon-Liste erscheinen sie als Gruppe **exo-Twinks**.
 - Gildensteuer: Saetze im Designer unter \"Steuersaetze\" anklicken;
   offener Betrag steht im Fensterkopf und im Uebersicht-Modul.
   `/exo tax` = Bericht, `/exo tax rate 7` = krummer Satz.
-- `/exo import` uebernimmt Daten aus einer alten Altoholic-Installation.
 - `/exo version`, `/exo debug` fuer Diagnose.
 
 ## Reiter
@@ -77,14 +76,16 @@ des Berufsfensters. Bestaende anderer Chars erscheinen in Item-Tooltips.
 ## Daten & Multi-Account
 
 SavedVariables: `ExoTwinksDB` (accountweit, `WTF/Account/<ACCOUNT>/SavedVariables/`).
-Aeltere Installationen (`AltoCoreDB`) werden beim ersten Login automatisch
-uebernommen. Mehrere WoW-Accounts: jede Lizenz hat ihre eigene DB; ein
+Die eigene SavedVariable frueherer Versionen (`AltoCoreDB`) wird beim
+ersten Login automatisch in `ExoTwinksDB` uebernommen. Das ist eine Migration
+der addon-eigenen Datenbank, kein Import aus einem Drittanbieter-Addon.
+Mehrere WoW-Accounts: jede Lizenz hat ihre eigene DB; ein
 Sync-Tool von Drittanbietern kann die Datei kopieren, solange WoW
 geschlossen ist (Schema ist versioniert und migriert selbststaendig).
 
 ## Entwicklung
 
-- Tests: `busted spec` (501 Tests), Statik: `luacheck ExoTwinksCore
+- Tests: `busted spec` (499 Tests), Statik: `luacheck ExoTwinksCore
   ExoTwinksUI ExoTwinksData spec`
 - Architektur: ein Global `Exo`; UI liest ausschliesslich `Exo.API`;
   interne Events `EXO_*` via `Exo.EventBus` (auch fuer Dritt-Addons).

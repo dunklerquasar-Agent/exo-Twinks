@@ -80,6 +80,18 @@ describe("Init / Bootstrap", function()
 			assert.is_function(_G.SlashCmdList["EXO"])
 		end)
 
+		it("Altoholic-Import ist entfernt", function()
+			assert.is_nil(Exo.LegacyImport)
+			run("import")
+			assert.truthy(mock.printed[#mock.printed]:find(
+				"Unbekanntes Kommando 'import'", 1, true))
+		end)
+
+		it("Minimap verwendet das neue AddOn-Icon", function()
+			assert.equal("Interface\\Icons\\inv_misc_key_02",
+				Exo.MinimapButton._textures[1]._texture)
+		end)
+
 		it("'version' druckt die Versionsnummer", function()
 			run("version")
 			assert.truthy(mock.printed[#mock.printed]:find("0.1.0-test", 1, true))

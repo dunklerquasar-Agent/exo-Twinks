@@ -122,7 +122,7 @@ local function onItemTooltip(tooltip, data)
 		tooltip:AddLine(line)
 	end
 
-	-- Nur fuer Items im Besitz (wie Altoholic seit 11.0.006)
+	-- Nur fuer Items im Besitz (keine Upgrade-Hinweise fuer fehlende Items)
 	local storageLine = Tooltip.StorageLine(data.id)
 	if storageLine then tooltip:AddLine(storageLine) end
 end

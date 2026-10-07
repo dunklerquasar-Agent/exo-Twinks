@@ -403,7 +403,8 @@ describe("ExoTwinksUI / Inventar-Tab", function()
 			local es = content._emptyState
 			assert.is_true(es.host:IsShown())
 			assert.truthy(es.title:GetText():find("Noch keine Inventar-Daten", 1, true))
-			assert.truthy(es.hint:GetText():find("/exo import", 1, true))
+			assert.truthy(es.hint:GetText():find("Bank: Bank besuchen", 1, true))
+			assert.is_nil(es.hint:GetText():find("/exo import", 1, true))
 		end)
 
 		it("Zyklus-Button erreicht die Kriegsmeutenbank und startet wieder vorn", function()

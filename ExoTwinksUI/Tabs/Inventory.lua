@@ -726,7 +726,7 @@ function Tab:Render(content)
 		-- der Footer zeigt nur noch die freien Plaetze.
 		Exo.UI.EmptyState.Show(content,
 			"Noch keine Inventar-Daten.",
-			"Charakter einmal einloggen (Bank: Bank oeffnen) oder /exo import nutzen.")
+			"Charakter einmal einloggen (Bank: Bank besuchen).")
 		self._footer:SetText(freeText)
 	else
 		Exo.UI.EmptyState.Hide(content)
